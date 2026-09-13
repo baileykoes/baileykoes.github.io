@@ -189,9 +189,16 @@
   #home{
     padding-top:4.5rem;
     display:grid;
-    grid-template-columns:1.5fr 0.5fr;
+    grid-template-columns:1.2fr 0.8fr;
     gap:1.1rem;
     align-items:center;
+  }
+
+  .hero-name-row{
+    display:flex;
+    align-items:center;
+    gap:1.3rem;
+    margin-bottom:1.3rem;
   }
 
   .headshot{
@@ -199,19 +206,29 @@
     border-radius:50%;
     object-fit:cover;
     border:1px solid var(--line);
-    margin-bottom:1.3rem;
     display:block;
+    flex:none;
     background:var(--paper-2);
   }
 
-  .hero-copy .kicker{margin-bottom:1.1rem;}
+  .big-name{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:clamp(2.4rem, 4.4vw, 3.6rem);
+    line-height:1.02;
+    color:var(--ink);
+    margin:0;
+  }
 
-  .hero-copy h1{
+  .hero-copy .kicker{margin-bottom:0.9rem; max-width:46ch;}
+
+  .hero-copy .tagline{
     font-family:var(--serif);
     font-weight:600;
     font-size:clamp(1.5rem, 2.2vw, 1.9rem);
     line-height:1.25;
     color:var(--ink-soft);
+    max-width:46ch;
     margin:0 0 1.1rem;
   }
 
@@ -268,7 +285,7 @@
   .hero-graph{
     position:relative;
     aspect-ratio:3/4;
-    max-width:380px;
+    max-width:460px;
     justify-self:end;
     border:1px solid var(--line);
     border-radius:8px;
@@ -580,6 +597,9 @@
     }
     section{padding:3.4rem 5vw;}
     #home{grid-template-columns:1fr; padding-top:2.5rem;}
+    .hero-name-row{gap:0.9rem;}
+    .headshot{width:88px; height:88px;}
+    .big-name{font-size:1.9rem;}
     .hero-graph{order:-1; max-width:300px;}
     .catalog, .resume-wrap, .contact-wrap{grid-template-columns:1fr;}
     .contact-side{border-left:none; padding-left:0; border-top:1px solid var(--line); padding-top:1.6rem;}
@@ -603,7 +623,6 @@
 <div class="shell">
   <nav class="legend-nav" aria-label="Section legend">
     <div class="legend-top">
-      <p class="name">Bailey<br>Koestel</p>
       <ul class="legend-list" id="navList">
         <li><a href="#home" class="active"><span class="swatch home"></span>Home</a></li>
         <li><a href="#portfolio"><span class="swatch portfolio"></span>Portfolio</a></li>
@@ -622,9 +641,12 @@
 
     <section id="home">
       <div class="hero-copy">
-        <img src="headshot.jpg" alt="Bailey Koestel" class="headshot">
+        <div class="hero-name-row">
+          <img src="headshot.jpg" alt="Bailey Koestel" class="headshot">
+          <h1 class="big-name">Bailey<br>Koestel</h1>
+        </div>
         <p class="kicker">Data Science · Business Analytics Concentration · Carthage College</p>
-        <h1>Turning uncertainty into insight, and data into decisions people can act on.</h1>
+        <p class="tagline">Turning uncertainty into insight, and data into decisions people can act on.</p>
         <p>I'm Bailey, a Data Science student at Carthage College with a concentration in Business Analytics and minors in Mathematics and Business Administration. Through internships at Vertiv and Snap-on, I've built dashboards, automated workflows with AI, and presented findings straight to leadership. This site is a working sample of that.</p>
         <div class="hero-actions">
           <a href="#portfolio" class="btn btn-solid">See the projects</a>
@@ -873,19 +895,29 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     ctx.setTransform(dpr,0,0,dpr,0,0);
+    const maxRadius = Math.min(w,h)/2 - 25;
+    const minRadius = 40;
     if(nodes.length === 0){
-      nodes = labels.map((label,i) => ({
-        label, color: colors[i],
-        x: i===0 ? w/2 : Math.random()*w,
-        y: i===0 ? h/2 : Math.random()*h,
-        vx: i===0 ? 0 : (Math.random()-0.5)*0.05,
-        vy: i===0 ? 0 : (Math.random()-0.5)*0.05,
-        r: i===0 ? 7 : 4,
-        fixed: i===0
-      }));
+      const moving = labels.length - 1;
+      nodes = labels.map((label,i) => {
+        if(i === 0){
+          return { label, color: colors[i], x:w/2, y:h/2, r:6, fixed:true };
+        }
+        const spread = ((i-1)/moving) * Math.PI*2;
+        const radiusFrac = ((i-1) * 0.61803398875) % 1; // golden-ratio spacing spreads radii evenly, not clustered
+        return {
+          label, color: colors[i],
+          baseRadius: minRadius + radiusFrac*(maxRadius-minRadius),
+          angle: spread + (Math.random()-0.5)*0.25,
+          angularSpeed: (0.0006 + Math.random()*0.0008) * (Math.random() < 0.5 ? -1 : 1),
+          jx:0, jy:0, x:0, y:0,
+          r:3, fixed:false
+        };
+      });
     } else {
       const center = nodes[0];
       if(center && center.fixed){ center.x = w/2; center.y = h/2; }
+      nodes.forEach(n => { if(!n.fixed) n.baseRadius = Math.min(n.baseRadius, maxRadius); });
     }
   }
   window.addEventListener('resize', resize);
@@ -904,35 +936,28 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
 
     const center = nodes[0];
     nodes.forEach(n => {
-      if(n.fixed) return; // Bailey stays put — everything else moves around this node
+      if(n.fixed) return; // Bailey stays put — everything else circles this node
 
-      n.x += n.vx; n.y += n.vy;
-      n.vx *= 0.97; n.vy *= 0.97; // damping keeps the drift calm instead of speeding up over time
-      if(n.x < 20 || n.x > w-20) n.vx *= -1;
-      if(n.y < 20 || n.y > h-20) n.vy *= -1;
+      n.angle += n.angularSpeed; // constant slow revolve, independent of the mouse
+      n.jx *= 0.92; n.jy *= 0.92; // temporary nudges (mouse, crowding) fade back into the orbit
+      n.jx = Math.max(-70, Math.min(70, n.jx));
+      n.jy = Math.max(-70, Math.min(70, n.jy));
 
-      // keep an orbit distance from the fixed center instead of drifting through it
-      if(center){
-        const cx = center.x - n.x, cy = center.y - n.y;
-        const distToCenter = Math.sqrt(cx*cx + cy*cy) || 1;
-        const minOrbit = 75;
-        if(distToCenter < minOrbit){
-          n.vx -= (cx/distToCenter)*0.05;
-          n.vy -= (cy/distToCenter)*0.05;
-        } else {
-          n.vx += cx*0.00004; n.vy += cy*0.00004;
-        }
-      }
+      const baseX = center.x + Math.cos(n.angle) * n.baseRadius;
+      const baseY = center.y + Math.sin(n.angle) * n.baseRadius;
 
-      const dx = mouse.x - n.x, dy = mouse.y - n.y;
+      const dx = mouse.x - (baseX + n.jx), dy = mouse.y - (baseY + n.jy);
       const dist = Math.sqrt(dx*dx + dy*dy);
       if(dist < 90){
-        n.x -= dx*0.01; n.y -= dy*0.01;
+        n.jx -= dx*0.06; n.jy -= dy*0.06;
       }
+
+      n.x = Math.max(45, Math.min(w-45, baseX + n.jx));
+      n.y = Math.max(30, Math.min(h-30, baseY + n.jy));
     });
 
     // keep neighboring dots apart so labels don't overlap and stay readable
-    const minSeparation = 78;
+    const minSeparation = 100;
     for(let i=0;i<nodes.length;i++){
       for(let j=i+1;j<nodes.length;j++){
         const a = nodes[i], b = nodes[j];
@@ -940,10 +965,10 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
         const dx = a.x-b.x, dy = a.y-b.y;
         const dist = Math.sqrt(dx*dx+dy*dy) || 1;
         if(dist < minSeparation){
-          const push = (minSeparation-dist)*0.006;
+          const push = (minSeparation-dist)*0.08;
           const ux = dx/dist, uy = dy/dist;
-          if(!a.fixed){ a.vx += ux*push; a.vy += uy*push; }
-          if(!b.fixed){ b.vx -= ux*push; b.vy -= uy*push; }
+          if(!a.fixed){ a.jx += ux*push; a.jy += uy*push; }
+          if(!b.fixed){ b.jx -= ux*push; b.jy -= uy*push; }
         }
       }
     }
@@ -953,9 +978,9 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
         const a = nodes[i], b = nodes[j];
         const dx = a.x-b.x, dy = a.y-b.y;
         const dist = Math.sqrt(dx*dx+dy*dy);
-        if(dist < 170){
-          ctx.strokeStyle = `rgba(28,35,33,${1 - dist/170})`;
-          ctx.lineWidth = 0.6;
+        if(dist < 130){
+          ctx.strokeStyle = `rgba(28,35,33,${1 - dist/130})`;
+          ctx.lineWidth = 0.5;
           ctx.beginPath();
           ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
           ctx.stroke();
@@ -963,14 +988,21 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
       }
     }
 
+    ctx.font = "9px 'IBM Plex Mono', monospace";
     nodes.forEach(n => {
       ctx.beginPath();
       ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
       ctx.fillStyle = n.color;
       ctx.fill();
-      ctx.font = "11px 'IBM Plex Mono', monospace";
       ctx.fillStyle = "#1C2321";
-      ctx.fillText(n.label, n.x + n.r + 5, n.y + 4);
+      // flip the label to the other side of the dot if it would run off the canvas edge
+      const labelWidth = ctx.measureText(n.label).width;
+      const gap = n.r + 5;
+      if(n.x + gap + labelWidth > w - 4){
+        ctx.fillText(n.label, n.x - gap - labelWidth, n.y + 3);
+      } else {
+        ctx.fillText(n.label, n.x + gap, n.y + 3);
+      }
     });
 
     if(!prefersReduced) requestAnimationFrame(step);
