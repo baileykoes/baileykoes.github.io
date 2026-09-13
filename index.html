@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bailey Koestel — Data Science Portfolio</title>
-<meta name="description" content="Bailey Koestel — data science portfolio: projects in Python, SQL, data visualization, and data storytelling.">
+<meta name="description" content="Bailey Koestel — data science portfolio: projects in Python, Power BI, data visualization, and AI automation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -23,6 +23,8 @@
     --teal-bg:#DFEEE9;
     --slate-bg:#E1E7F0;
     --rust-bg:#F5E2D9;
+    --olive:#8A7B3F;
+    --olive-bg:#EDE8D2;
     --sidebar-w:264px;
     --serif:'Fraunces', Georgia, serif;
     --sans:'IBM Plex Sans', -apple-system, sans-serif;
@@ -326,9 +328,10 @@
     transition:all 0.15s ease;
   }
   .chip[data-skill="Python"].active{background:var(--gold-bg); border-color:var(--gold); color:var(--ink);}
-  .chip[data-skill="SQL"].active{background:var(--teal-bg); border-color:var(--teal); color:var(--ink);}
+  .chip[data-skill="Power BI"].active{background:var(--teal-bg); border-color:var(--teal); color:var(--ink);}
   .chip[data-skill="Data Visualization"].active{background:var(--rust-bg); border-color:var(--rust); color:var(--ink);}
-  .chip[data-skill="Data Storytelling"].active{background:var(--slate-bg); border-color:var(--slate); color:var(--ink);}
+  .chip[data-skill="AI Automation"].active{background:var(--slate-bg); border-color:var(--slate); color:var(--ink);}
+  .chip[data-skill="Excel"].active{background:var(--olive-bg); border-color:var(--olive); color:var(--ink);}
   .chip.active{font-weight:600;}
   .chip:hover{border-color:var(--ink);}
 
@@ -366,9 +369,10 @@
     color:var(--ink);
   }
   .project-tag.Python{background:var(--gold-bg);}
-  .project-tag.SQL{background:var(--teal-bg);}
+  .project-tag.Power-BI{background:var(--teal-bg);}
   .project-tag.Data-Visualization{background:var(--rust-bg);}
-  .project-tag.Data-Storytelling{background:var(--slate-bg);}
+  .project-tag.AI-Automation{background:var(--slate-bg);}
+  .project-tag.Excel{background:var(--olive-bg);}
 
   .project-body{
     padding:1.1rem 1.2rem 1.3rem;
@@ -653,8 +657,7 @@
           <a href="#contact" class="btn btn-outline">Get in touch</a>
         </div>
         <div class="hero-stats">
-          <div class="stat"><div class="num">4</div><div class="label">FEATURED PROJECTS</div></div>
-          <div class="stat"><div class="num">4</div><div class="label">CORE SKILLS</div></div>
+          <div class="stat"><div class="num">5</div><div class="label">FEATURED PROJECTS</div></div>
           <div class="stat"><div class="num">2027</div><div class="label">GRAD YEAR</div></div>
         </div>
       </div>
@@ -670,9 +673,10 @@
       <div class="filters" id="filters">
         <button class="chip active" data-skill="all">All projects</button>
         <button class="chip" data-skill="Python">Python</button>
-        <button class="chip" data-skill="SQL">SQL</button>
+        <button class="chip" data-skill="Power BI">Power BI</button>
         <button class="chip" data-skill="Data Visualization">Data Visualization</button>
-        <button class="chip" data-skill="Data Storytelling">Data Storytelling</button>
+        <button class="chip" data-skill="AI Automation">AI Automation</button>
+        <button class="chip" data-skill="Excel">Excel</button>
       </div>
 
       <div class="project-grid" id="projectGrid">
@@ -722,9 +726,10 @@
           <p style="font-family:var(--mono); font-size:0.78rem; color:var(--ink-soft); margin-top:0;">core competencies</p>
           <ul class="competency-list">
             <li>Python <div class="bar"><span style="width:90%; background:var(--gold);"></span></div></li>
-            <li>SQL <div class="bar"><span style="width:85%; background:var(--teal);"></span></div></li>
+            <li>Power BI <div class="bar"><span style="width:88%; background:var(--teal);"></span></div></li>
             <li>Data Visualization <div class="bar"><span style="width:88%; background:var(--rust);"></span></div></li>
-            <li>Data Storytelling <div class="bar"><span style="width:80%; background:var(--slate);"></span></div></li>
+            <li>AI Automation <div class="bar"><span style="width:82%; background:var(--slate);"></span></div></li>
+            <li>Excel <div class="bar"><span style="width:85%; background:var(--olive);"></span></div></li>
           </ul>
           <p style="margin-top:1.6rem;">B.S. Data Science, Business Analytics Concentration<br>Minors: Mathematics, Business Administration<br>Carthage College — Class of 2027</p>
         </div>
@@ -782,9 +787,9 @@ const PROJECTS = [
     link: "#"
   },
   {
-    title: "Retail Sales Warehouse",
-    skill: "SQL",
-    desc: "Modeled and queried a multi-table sales dataset to answer real stakeholder questions about seasonal demand.",
+    title: "Business Unit Performance Dashboard",
+    skill: "Power BI",
+    desc: "Built Power BI dashboards during my Vertiv internship covering demand, capacity, revenue, and operational insights across 4+ business units and 20+ product lines.",
     img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
     link: "#"
   },
@@ -796,10 +801,17 @@ const PROJECTS = [
     link: "#"
   },
   {
-    title: "What the Commute Data Actually Says",
-    skill: "Data Storytelling",
-    desc: "A short written piece walking a general audience through what county commute-time data reveals, and what it doesn't.",
+    title: "AI-Automated Reporting Workflow",
+    skill: "AI Automation",
+    desc: "Used Microsoft Power Automate and AI tools during my Vertiv internship to automate manual reporting workflows, improving efficiency, accuracy, and data accessibility.",
     img: "https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?q=80&w=800&auto=format&fit=crop",
+    link: "#"
+  },
+  {
+    title: "Insurance Risk Reporting",
+    skill: "Excel",
+    desc: "Built and maintained Excel reports during my Snap-on internship using formulas, pivot tables, and data validation to summarize claims data and surface operational risk trends.",
+    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
     link: "#"
   }
 ];
@@ -882,8 +894,8 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
   const ctx = canvas.getContext('2d');
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const labels = ["Bailey", "Python", "SQL", "Visualization", "Storytelling", "Carthage", "Internships", "Power BI", "Tableau", "AI Automation", "HTML"];
-  const colors = ["#1C2321", "#C99A1E", "#2F7A6D", "#BD4F2C", "#48628C", "#1C2321", "#BD4F2C", "#2F7A6D", "#C99A1E", "#48628C", "#BD4F2C"];
+  const labels = ["Bailey", "Python", "Visualization", "Analytics", "Mathematics", "Power BI", "Tableau", "AI Automation", "HTML", "Excel"];
+  const colors = ["#1C2321", "#C99A1E", "#BD4F2C", "#1C2321", "#BD4F2C", "#2F7A6D", "#C99A1E", "#48628C", "#BD4F2C", "#8A7B3F"];
   let nodes = [];
   let w, h, dpr;
 
