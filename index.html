@@ -189,8 +189,8 @@
   #home{
     padding-top:4.5rem;
     display:grid;
-    grid-template-columns:1.05fr 0.95fr;
-    gap:2.5rem;
+    grid-template-columns:1.5fr 0.5fr;
+    gap:1.1rem;
     align-items:center;
   }
 
@@ -267,8 +267,8 @@
 
   .hero-graph{
     position:relative;
-    aspect-ratio:1/1;
-    max-width:340px;
+    aspect-ratio:3/4;
+    max-width:380px;
     justify-self:end;
     border:1px solid var(--line);
     border-radius:8px;
@@ -624,7 +624,7 @@
       <div class="hero-copy">
         <img src="headshot.jpg" alt="Bailey Koestel" class="headshot">
         <p class="kicker">Data Science · Business Analytics Concentration · Carthage College</p>
-        <h1>I turn uncertainty into insight, and data into decisions people can act on.</h1>
+        <h1>Turning uncertainty into insight, and data into decisions people can act on.</h1>
         <p>I'm Bailey, a Data Science student at Carthage College with a concentration in Business Analytics and minors in Mathematics and Business Administration. Through internships at Vertiv and Snap-on, I've built dashboards, automated workflows with AI, and presented findings straight to leadership. This site is a working sample of that.</p>
         <div class="hero-actions">
           <a href="#portfolio" class="btn btn-solid">See the projects</a>
@@ -878,8 +878,8 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
         label, color: colors[i],
         x: i===0 ? w/2 : Math.random()*w,
         y: i===0 ? h/2 : Math.random()*h,
-        vx: i===0 ? 0 : (Math.random()-0.5)*0.1,
-        vy: i===0 ? 0 : (Math.random()-0.5)*0.1,
+        vx: i===0 ? 0 : (Math.random()-0.5)*0.05,
+        vy: i===0 ? 0 : (Math.random()-0.5)*0.05,
         r: i===0 ? 7 : 4,
         fixed: i===0
       }));
@@ -907,6 +907,7 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
       if(n.fixed) return; // Bailey stays put — everything else moves around this node
 
       n.x += n.vx; n.y += n.vy;
+      n.vx *= 0.97; n.vy *= 0.97; // damping keeps the drift calm instead of speeding up over time
       if(n.x < 20 || n.x > w-20) n.vx *= -1;
       if(n.y < 20 || n.y > h-20) n.vy *= -1;
 
@@ -914,12 +915,12 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
       if(center){
         const cx = center.x - n.x, cy = center.y - n.y;
         const distToCenter = Math.sqrt(cx*cx + cy*cy) || 1;
-        const minOrbit = 55;
+        const minOrbit = 75;
         if(distToCenter < minOrbit){
           n.vx -= (cx/distToCenter)*0.05;
           n.vy -= (cy/distToCenter)*0.05;
         } else {
-          n.vx += cx*0.00006; n.vy += cy*0.00006;
+          n.vx += cx*0.00004; n.vy += cy*0.00004;
         }
       }
 
@@ -929,6 +930,23 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
         n.x -= dx*0.01; n.y -= dy*0.01;
       }
     });
+
+    // keep neighboring dots apart so labels don't overlap and stay readable
+    const minSeparation = 78;
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a = nodes[i], b = nodes[j];
+        if(a.fixed && b.fixed) continue;
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const dist = Math.sqrt(dx*dx+dy*dy) || 1;
+        if(dist < minSeparation){
+          const push = (minSeparation-dist)*0.006;
+          const ux = dx/dist, uy = dy/dist;
+          if(!a.fixed){ a.vx += ux*push; a.vy += uy*push; }
+          if(!b.fixed){ b.vx -= ux*push; b.vy -= uy*push; }
+        }
+      }
+    }
 
     for(let i=0;i<nodes.length;i++){
       for(let j=i+1;j<nodes.length;j++){
