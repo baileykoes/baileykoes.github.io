@@ -193,6 +193,16 @@
     align-items:center;
   }
 
+  .headshot{
+    width:88px; height:88px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid var(--line);
+    margin-bottom:1.3rem;
+    display:block;
+    background:var(--paper-2);
+  }
+
   .hero-copy .kicker{margin-bottom:1.1rem;}
 
   .hero-copy h1{
@@ -581,7 +591,7 @@
 <nav class="mobile-menu" id="mobileMenu">
   <a href="#home"><span class="swatch home"></span>Home</a>
   <a href="#portfolio"><span class="swatch portfolio"></span>Portfolio</a>
-  <a href="#carthage"><span class="swatch carthage"></span>Data science at Carthage</a>
+  <a href="#carthage"><span class="swatch carthage"></span>Data Science at Carthage</a>
   <a href="#resume"><span class="swatch resume"></span>Resume</a>
   <a href="#contact"><span class="swatch contact"></span>Contact</a>
 </nav>
@@ -594,7 +604,7 @@
       <ul class="legend-list" id="navList">
         <li><a href="#home" class="active"><span class="swatch home"></span>Home</a></li>
         <li><a href="#portfolio"><span class="swatch portfolio"></span>Portfolio</a></li>
-        <li><a href="#carthage"><span class="swatch carthage"></span>Data science at Carthage</a></li>
+        <li><a href="#carthage"><span class="swatch carthage"></span>Data Science at Carthage</a></li>
         <li><a href="#resume"><span class="swatch resume"></span>Resume</a></li>
         <li><a href="#contact"><span class="swatch contact"></span>Contact</a></li>
       </ul>
@@ -609,9 +619,10 @@
 
     <section id="home">
       <div class="hero-copy">
-        <p class="kicker">data science · business analytics concentration · Carthage College</p>
+        <img src="headshot.jpg" alt="Bailey Koestel" class="headshot">
+        <p class="kicker">Data Science · Business Analytics Concentration · Carthage College</p>
         <h1>I turn uncertainty into insight, and data into decisions people can act on.</h1>
-        <p>I'm Bailey — a data science student at Carthage College with a concentration in Business Analytics and minors in Mathematics and Business Administration. Through internships at Vertiv and Snap-on, I've built dashboards, automated workflows with AI, and presented findings straight to leadership. This site is a working sample of that.</p>
+        <p>I'm Bailey, a Data Science student at Carthage College with a concentration in Business Analytics and minors in Mathematics and Business Administration. Through internships at Vertiv and Snap-on, I've built dashboards, automated workflows with AI, and presented findings straight to leadership. This site is a working sample of that.</p>
         <div class="hero-actions">
           <a href="#portfolio" class="btn btn-solid">See the projects</a>
           <a href="#contact" class="btn btn-outline">Get in touch</a>
@@ -629,8 +640,6 @@
     </section>
 
     <section id="portfolio">
-      <p class="kicker">02 — selected work</p>
-      <h2 class="section-title">Portfolio</h2>
       <p class="lede">Every project below is tagged by the skill it leans on hardest. Filter by skill, or scroll through everything.</p>
 
       <div class="filters" id="filters">
@@ -645,43 +654,43 @@
         <!-- project cards injected by JS from PROJECTS array -->
       </div>
 
-      <p class="edit-note">Edit note: replace the 4 sample projects in the PROJECTS array (bottom of the file) with your real ones — including your interactive manufacturing map linked to its own HTML page.</p>
+      <p class="edit-note">Edit note: replace the 4 sample projects in the PROJECTS array (bottom of the file) with your real ones — including your interactive manufacturing map linked to its own HTML page. Also add a headshot.jpg next to index.html (square photo works best) so the circular photo on the home section shows up instead of a blank placeholder.</p>
     </section>
 
     <section id="carthage">
-      <p class="kicker">03 — coursework</p>
-      <h2 class="section-title">Data science at Carthage</h2>
-      <p class="lede">The two paths that shaped how I work with data: the core data science major, and the concentration coursework that gave it a domain to point at.</p>
+      <p class="lede">The two paths that shaped how I work with data: the core Data Science major, and the Business Analytics Concentration I built to give it a domain to point at.</p>
 
       <div class="catalog">
         <div>
-          <h3>Data science major</h3>
+          <h3>Data Science major</h3>
           <table class="course-table">
-            <tr><td class="code">DATA 2100</td><td>Introduction to Data Science</td><td class="credits">4</td></tr>
-            <tr><td class="code">DATA 2200</td><td>Programming for Data Science (Python)</td><td class="credits">4</td></tr>
-            <tr><td class="code">DATA 3100</td><td>Databases &amp; SQL</td><td class="credits">4</td></tr>
-            <tr><td class="code">DATA 3200</td><td>Data Visualization</td><td class="credits">4</td></tr>
-            <tr><td class="code">DATA 3300</td><td>Statistical Modeling</td><td class="credits">4</td></tr>
-            <tr><td class="code">DATA 4100</td><td>Machine Learning</td><td class="credits">4</td></tr>
-            <tr><td class="code">DATA 4900</td><td>Senior Capstone in Data Science</td><td class="credits">4</td></tr>
+            <tr><td class="code">CSC 1030</td><td>Data Science I</td><td class="credits">4</td></tr>
+            <tr><td class="code">CSC 1040</td><td>Data Science II</td><td class="credits">4</td></tr>
+            <tr><td class="code">CSC 1810</td><td>Principles of Computer Science I</td><td class="credits">4</td></tr>
+            <tr><td class="code">CSC 2810</td><td>Database Design and Management</td><td class="credits">4</td></tr>
+            <tr><td class="code">MTH 1050</td><td>Elementary Statistics</td><td class="credits">4</td></tr>
+            <tr><td class="code">MTH 1120</td><td>Calculus I</td><td class="credits">4</td></tr>
+            <tr><td class="code">MTH 2040</td><td>Linear Algebra</td><td class="credits">4</td></tr>
+            <tr><td class="code">MTH 2190</td><td>Ethics in Data Science</td><td class="credits">4</td></tr>
+            <tr><td class="code">MTH 3090</td><td>Mathematics of Data Science</td><td class="credits">4</td></tr>
+            <tr><td class="code">MTH 3350</td><td>Data Science Portfolio I</td><td class="credits">1</td></tr>
+            <tr><td class="code">MTH 4350</td><td>Data Science Portfolio II</td><td class="credits">1</td></tr>
           </table>
         </div>
         <div>
-          <h3>Business Analytics concentration</h3>
+          <h3>Business Analytics Concentration</h3>
           <table class="course-table">
-            <tr><td class="code">BUS 2200</td><td>Principles of Business Analytics</td><td class="credits">3</td></tr>
-            <tr><td class="code">BUS 3100</td><td>Operations &amp; Supply Chain</td><td class="credits">3</td></tr>
-            <tr><td class="code">BUS 3400</td><td>Applied Forecasting</td><td class="credits">3</td></tr>
-            <tr><td class="code">BUS 4200</td><td>Analytics for Decision Making</td><td class="credits">3</td></tr>
+            <tr><td class="code">MGT 3100</td><td>Introduction to Business Analytics</td><td class="credits">—</td></tr>
+            <tr><td class="code">MKT 3130</td><td>Marketing Principles</td><td class="credits">—</td></tr>
+            <tr><td class="code">ACC 2000</td><td>Accounting Fundamentals</td><td class="credits">—</td></tr>
           </table>
+          <p style="font-size:0.9rem; color:var(--ink-soft); margin-top:1.2rem;">I built this concentration to pair the technical side of the major with how businesses actually use data — analytical models in MGT 3100, how that data connects to customer behavior in MKT 3130, and how it ties back to the financial statements it's meant to inform in ACC 2000.</p>
         </div>
       </div>
-      <p class="edit-note">Edit note: course codes above are still placeholders — swap in your actual Data Science major requirements and Business Analytics concentration courses. (Your Mathematics and Business Administration minors could get their own columns too, if you want them on the page.)</p>
+      <p class="edit-note">Edit note: I left the credit counts for the three concentration courses as "—" since your proposal didn't list them — fill those in with the real numbers from the Carthage catalog.</p>
     </section>
 
     <section id="resume">
-      <p class="kicker">04 — the short version</p>
-      <h2 class="section-title">Resume</h2>
       <p class="lede">The full write-up is one click away. Here's what it leads with.</p>
 
       <div class="resume-wrap">
@@ -704,8 +713,6 @@
     </section>
 
     <section id="contact">
-      <p class="kicker">05 — say hello</p>
-      <h2 class="section-title">Contact</h2>
       <p class="lede">Have a role, a question, or feedback on a project? Send it over.</p>
 
       <div class="contact-wrap">
@@ -728,7 +735,7 @@
         <div class="contact-side">
           <p style="font-family:var(--mono); font-size:0.78rem; color:var(--ink-soft);">also reachable at</p>
           <a class="li-big" href="https://www.linkedin.com/in/baileykoestel-5887682a8" target="_blank" rel="noopener">LinkedIn — in/baileykoestel</a>
-          <p style="margin-top:1.4rem;">Greater St. Louis · open to internships and full-time roles in business analytics, data analytics, and product strategy for 2027.</p>
+          <p style="margin-top:1.4rem;">Open to internships and full-time roles in business analytics, data analytics, and product strategy for 2027.</p>
         </div>
       </div>
       <p class="edit-note">Edit note: this form opens the visitor's email app pre-filled (no backend needed). Swap in your real email address in the JS, or connect a service like Formspree if you'd rather receive submissions directly.</p>
@@ -851,7 +858,7 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
   const ctx = canvas.getContext('2d');
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const labels = ["Bailey", "Python", "SQL", "Viz", "Storytelling", "Carthage", "Vertiv", "Manufacturing Map"];
+  const labels = ["Bailey", "Python", "SQL", "Visualization", "Storytelling", "Carthage", "Vertiv", "Manufacturing Map"];
   const colors = ["#1C2321", "#C99A1E", "#2F7A6D", "#BD4F2C", "#48628C", "#1C2321", "#C99A1E", "#BD4F2C"];
   let nodes = [];
   let w, h, dpr;
@@ -866,10 +873,16 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
     if(nodes.length === 0){
       nodes = labels.map((label,i) => ({
         label, color: colors[i],
-        x: Math.random()*w, y: Math.random()*h,
-        vx:(Math.random()-0.5)*0.25, vy:(Math.random()-0.5)*0.25,
-        r: i===0 ? 6 : 4
+        x: i===0 ? w/2 : Math.random()*w,
+        y: i===0 ? h/2 : Math.random()*h,
+        vx: i===0 ? 0 : (Math.random()-0.5)*0.3,
+        vy: i===0 ? 0 : (Math.random()-0.5)*0.3,
+        r: i===0 ? 7 : 4,
+        fixed: i===0
       }));
+    } else {
+      const center = nodes[0];
+      if(center && center.fixed){ center.x = w/2; center.y = h/2; }
     }
   }
   window.addEventListener('resize', resize);
@@ -886,10 +899,20 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
   function step(){
     ctx.clearRect(0,0,w,h);
 
+    const center = nodes[0];
     nodes.forEach(n => {
+      if(n.fixed) return; // Bailey stays put — everything else moves around this node
+
       n.x += n.vx; n.y += n.vy;
       if(n.x < 20 || n.x > w-20) n.vx *= -1;
       if(n.y < 20 || n.y > h-20) n.vy *= -1;
+
+      // gentle pull toward the fixed center so the others visibly orbit it
+      if(center){
+        const cx = center.x - n.x, cy = center.y - n.y;
+        n.vx += cx*0.00006; n.vy += cy*0.00006;
+      }
+
       const dx = mouse.x - n.x, dy = mouse.y - n.y;
       const dist = Math.sqrt(dx*dx + dy*dy);
       if(dist < 90){
