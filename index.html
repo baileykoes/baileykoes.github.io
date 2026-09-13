@@ -151,6 +151,7 @@
 
   /* mobile topbar */
   .topbar{display:none;}
+  .mobile-menu{display:none;}
 
   /* ---------- main content ---------- */
   main{min-width:0;}
@@ -208,14 +209,15 @@
   .hero-copy h1{
     font-family:var(--serif);
     font-weight:600;
-    font-size:clamp(2.4rem, 4.2vw, 3.6rem);
-    line-height:1.06;
-    margin:0 0 1.3rem;
+    font-size:clamp(1.5rem, 2.2vw, 1.9rem);
+    line-height:1.25;
+    color:var(--ink-soft);
+    margin:0 0 1.1rem;
   }
 
   .hero-copy p{
-    font-size:1.08rem;
-    color:var(--ink-soft);
+    font-size:1.15rem;
+    color:var(--ink);
     max-width:46ch;
     margin:0 0 2rem;
   }
@@ -266,6 +268,8 @@
   .hero-graph{
     position:relative;
     aspect-ratio:1/1;
+    max-width:340px;
+    justify-self:end;
     border:1px solid var(--line);
     border-radius:8px;
     background:
@@ -576,7 +580,7 @@
     }
     section{padding:3.4rem 5vw;}
     #home{grid-template-columns:1fr; padding-top:2.5rem;}
-    .hero-graph{order:-1; max-width:420px;}
+    .hero-graph{order:-1; max-width:300px;}
     .catalog, .resume-wrap, .contact-wrap{grid-template-columns:1fr;}
     .contact-side{border-left:none; padding-left:0; border-top:1px solid var(--line); padding-top:1.6rem;}
   }
@@ -599,7 +603,6 @@
 <div class="shell">
   <nav class="legend-nav" aria-label="Section legend">
     <div class="legend-top">
-      <p class="brand">dataset: portfolio.csv</p>
       <p class="name">Bailey<br>Koestel</p>
       <ul class="legend-list" id="navList">
         <li><a href="#home" class="active"><span class="swatch home"></span>Home</a></li>
@@ -858,8 +861,8 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
   const ctx = canvas.getContext('2d');
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const labels = ["Bailey", "Python", "SQL", "Visualization", "Storytelling", "Carthage", "Manufacturing Map"];
-  const colors = ["#1C2321", "#C99A1E", "#2F7A6D", "#BD4F2C", "#48628C", "#1C2321", "#BD4F2C"];
+  const labels = ["Bailey", "Python", "SQL", "Visualization", "Storytelling", "Carthage", "Internships", "Power BI", "Tableau", "AI Automation", "HTML"];
+  const colors = ["#1C2321", "#C99A1E", "#2F7A6D", "#BD4F2C", "#48628C", "#1C2321", "#BD4F2C", "#2F7A6D", "#C99A1E", "#48628C", "#BD4F2C"];
   let nodes = [];
   let w, h, dpr;
 
@@ -875,8 +878,8 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
         label, color: colors[i],
         x: i===0 ? w/2 : Math.random()*w,
         y: i===0 ? h/2 : Math.random()*h,
-        vx: i===0 ? 0 : (Math.random()-0.5)*0.3,
-        vy: i===0 ? 0 : (Math.random()-0.5)*0.3,
+        vx: i===0 ? 0 : (Math.random()-0.5)*0.1,
+        vy: i===0 ? 0 : (Math.random()-0.5)*0.1,
         r: i===0 ? 7 : 4,
         fixed: i===0
       }));
@@ -907,10 +910,17 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
       if(n.x < 20 || n.x > w-20) n.vx *= -1;
       if(n.y < 20 || n.y > h-20) n.vy *= -1;
 
-      // gentle pull toward the fixed center so the others visibly orbit it
+      // keep an orbit distance from the fixed center instead of drifting through it
       if(center){
         const cx = center.x - n.x, cy = center.y - n.y;
-        n.vx += cx*0.00006; n.vy += cy*0.00006;
+        const distToCenter = Math.sqrt(cx*cx + cy*cy) || 1;
+        const minOrbit = 55;
+        if(distToCenter < minOrbit){
+          n.vx -= (cx/distToCenter)*0.05;
+          n.vy -= (cy/distToCenter)*0.05;
+        } else {
+          n.vx += cx*0.00006; n.vy += cy*0.00006;
+        }
       }
 
       const dx = mouse.x - n.x, dy = mouse.y - n.y;
