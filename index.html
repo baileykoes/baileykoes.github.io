@@ -222,7 +222,9 @@
     margin:0;
   }
 
-  .hero-copy .kicker{margin-bottom:0.9rem; max-width:46ch;}
+  .hero-copy .kicker{margin-bottom:0.9rem;}
+  .nowrap{white-space:nowrap;}
+  @media (max-width:600px){ .nowrap{white-space:normal;} }
 
   .hero-copy .tagline{
     font-family:var(--serif);
@@ -240,6 +242,39 @@
     max-width:46ch;
     margin:0 0 2rem;
   }
+
+  .hero-copy .tagline{
+    color:var(--ink);
+    margin:0 0 1.2rem;
+  }
+
+  .hero-bullets{
+    list-style:none;
+    margin:0 0 2rem;
+    padding:0;
+    max-width:50ch;
+    display:flex;
+    flex-direction:column;
+    gap:0.9rem;
+  }
+  .hero-bullets li{
+    position:relative;
+    padding-left:1.5rem;
+    font-size:1.08rem;
+    line-height:1.5;
+    color:var(--ink);
+  }
+  .hero-bullets li::before{
+    content:"";
+    position:absolute;
+    left:0; top:0.5em;
+    width:0.7rem; height:0.7rem;
+    border-radius:2px;
+    background:var(--ink);
+  }
+  .hero-bullets li.b-gold::before{background:var(--gold);}
+  .hero-bullets li.b-teal::before{background:var(--teal);}
+  .hero-bullets li.b-rust::before{background:var(--rust);}
 
   .hero-actions{
     display:flex;
@@ -282,6 +317,89 @@
     font-family:var(--mono);
     font-size:0.72rem;
     color:var(--ink-soft);
+  }
+
+  .company-photos{
+    display:flex;
+    gap:0.9rem;
+    margin-top:1.8rem;
+    max-width:46ch;
+  }
+  .company-photo{
+    flex:1;
+    position:relative;
+    aspect-ratio:4/3;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:var(--paper-2);
+  }
+  .company-photo img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  button.company-photo{
+    padding:0; margin:0; font:inherit; text-align:left; cursor:zoom-in;
+    transition:transform 0.18s ease, border-color 0.18s ease;
+  }
+  button.company-photo:hover{transform:scale(1.02); border-color:var(--ink);}
+  button.company-photo::after{
+    content:"+";
+    position:absolute; top:0.5rem; right:0.5rem;
+    width:1.5rem; height:1.5rem; border-radius:50%;
+    background:rgba(243,245,240,0.92); color:var(--ink);
+    font-family:var(--mono); font-size:1rem; line-height:1.5rem; text-align:center;
+  }
+
+  /* expanded photo + summary */
+  .lightbox{
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    padding:1.5rem;
+    background:rgba(28,35,33,0.72);
+    opacity:0; visibility:hidden;
+    transition:opacity 0.2s ease, visibility 0.2s ease;
+  }
+  .lightbox.open{opacity:1; visibility:visible;}
+  .lb-card{
+    position:relative;
+    display:grid; grid-template-columns:1.15fr 1fr;
+    width:min(960px, 100%); max-height:90vh;
+    background:var(--card);
+    border-radius:10px; overflow:hidden;
+    transform:scale(0.92);
+    transition:transform 0.22s ease;
+  }
+  .lightbox.open .lb-card{transform:scale(1);}
+  .lb-card img{width:100%; height:100%; min-height:320px; max-height:90vh; object-fit:cover; display:block; background:var(--paper-2);}
+  .lb-text{padding:2rem 1.8rem; overflow:auto;}
+  .lb-meta{font-family:var(--mono); font-size:0.78rem; color:var(--ink-soft); margin:0 0 0.5rem;}
+  .lb-text h3{font-family:var(--serif); font-size:1.7rem; font-weight:600; margin:0 0 1rem;}
+  .lb-text ul{margin:0; padding-left:1.1rem; display:flex; flex-direction:column; gap:0.6rem; font-size:0.95rem; color:var(--ink);}
+  .lb-close{
+    position:absolute; top:0.6rem; right:0.6rem; z-index:2;
+    width:2.2rem; height:2.2rem; border-radius:50%;
+    border:1px solid var(--line); background:rgba(255,255,255,0.95);
+    font-size:1.3rem; line-height:1; cursor:pointer; color:var(--ink);
+  }
+  .lb-close:hover{border-color:var(--ink);}
+  @media (max-width:700px){
+    .lb-card{grid-template-columns:1fr; overflow:auto;}
+    .lb-card img{min-height:0; height:auto; max-height:40vh;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .lightbox, .lb-card, button.company-photo{transition:none;}
+  }
+  .company-label{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    background:rgba(28,35,33,0.78);
+    color:#F3F5F0;
+    font-family:var(--mono);
+    font-size:0.66rem;
+    padding:0.4rem 0.55rem;
+    line-height:1.3;
   }
 
   .hero-graph{
@@ -647,18 +765,32 @@
       <div class="hero-copy">
         <div class="hero-name-row">
           <img src="headshot.jpg" alt="Bailey Koestel" class="headshot">
-          <h1 class="big-name">Bailey<br>Koestel</h1>
+          <h1 class="big-name">Hi, I'm Bailey Koestel!</h1>
         </div>
-        <p class="kicker">Data Science · Business Analytics Concentration · Carthage College</p>
-        <p class="tagline">Hi, I'm Bailey. I turn messy data into something people can use.</p>
-        <p>Data Science student at Carthage College, concentrating in Business Analytics with minors in Math and Business Administration. At Vertiv and Snap-on I built dashboards, automated workflows with AI, and pitched findings to leadership.</p>
+        <p class="kicker"><span class="nowrap">Data Science &middot; Business Analytics Concentration</span><br>Carthage College</p>
+        <p class="tagline">Check out some of my tools currently utilized by thousands at Fortune 500 companies!</p>
+        <ul class="hero-bullets">
+          <li class="b-gold">At Vertiv and Snap-on, I built dashboards, automated workflows with AI, and pitched findings to leadership.</li>
+          <li class="b-teal">From interactive maps to Power BI dashboards to AI automation, each project taught me a new tool and a new way to solve problems.</li>
+        </ul>
         <div class="hero-actions">
           <a href="#portfolio" class="btn btn-solid">See the projects</a>
           <a href="#contact" class="btn btn-outline">Get in touch</a>
         </div>
         <div class="hero-stats">
           <div class="stat"><div class="num">5</div><div class="label">FEATURED PROJECTS</div></div>
+          <div class="stat"><div class="num">2+</div><div class="label">YEARS EXPERIENCE</div></div>
           <div class="stat"><div class="num">2027</div><div class="label">GRAD YEAR</div></div>
+        </div>
+        <div class="company-photos">
+          <button type="button" class="company-photo" data-company="vertiv" aria-label="Expand Vertiv photo and read a summary">
+            <img src="vertiv-photo.jpg" alt="Bailey Koestel at Vertiv">
+            <span class="company-label">Vertiv, Data Operations Intern</span>
+          </button>
+          <button type="button" class="company-photo" data-company="snapon" aria-label="Expand Snap-on photo and read a summary">
+            <img src="snapon-photo.jpg" alt="Bailey Koestel at Snap-on">
+            <span class="company-label">Snap-on, Corporate Risk Analysis Intern</span>
+          </button>
         </div>
       </div>
       <div class="hero-graph">
@@ -758,16 +890,18 @@
             <label for="cf-comment">Comment</label>
             <textarea id="cf-comment" name="comment" required></textarea>
           </div>
-          <button type="submit" class="btn btn-solid" style="width:fit-content;">Send message</button>
-          <p id="formNote" style="font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft); display:none;">Opening your email app with this filled in — send it from there.</p>
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute; left:-9999px;" aria-hidden="true">
+          <button type="submit" class="btn btn-solid" id="sendBtn" style="width:fit-content;">Send message</button>
+          <p id="formNote" role="status" aria-live="polite" style="font-family:var(--mono); font-size:0.78rem; color:var(--ink-soft); display:none; margin:0;"></p>
         </form>
         <div class="contact-side">
           <p style="font-family:var(--mono); font-size:0.78rem; color:var(--ink-soft);">also reachable at</p>
-          <a class="li-big" href="https://www.linkedin.com/in/bailey-koestel-5887682a8" target="_blank" rel="noopener">LinkedIn — in/bailey-koestel</a>
+          <a class="li-big" href="mailto:bailey.koestel@gmail.com">bailey.koestel@gmail.com</a>
+          <br>
+          <a class="li-big" href="https://www.linkedin.com/in/bailey-koestel-5887682a8" target="_blank" rel="noopener">LinkedIn: in/bailey-koestel</a>
           <p style="margin-top:1.4rem;">Open to full-time roles in business analytics, data analytics, and product strategy starting 2027.</p>
         </div>
       </div>
-      <p class="edit-note">Edit note: this form opens the visitor's email app pre-filled (no backend needed). Swap in your real email address in the JS, or connect a service like Formspree if you'd rather receive submissions directly.</p>
     </section>
 
     <footer>
@@ -776,6 +910,18 @@
   </main>
 </div>
 
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lbTitle" aria-hidden="true">
+  <div class="lb-card">
+    <button type="button" class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+    <img id="lbImg" src="" alt="">
+    <div class="lb-text">
+      <p class="lb-meta" id="lbMeta"></p>
+      <h3 id="lbTitle"></h3>
+      <ul id="lbList"></ul>
+    </div>
+  </div>
+</div>
 <script>
 /* ===================== DATA: edit these ===================== */
 const PROJECTS = [
@@ -875,16 +1021,45 @@ const io = new IntersectionObserver((entries) => {
 }, { rootMargin: '-40% 0px -55% 0px' });
 sections.forEach(s => io.observe(s));
 
-/* contact form -> mailto */
-document.getElementById('contactForm').addEventListener('submit', (e) => {
+/* contact form: sends straight to your inbox via FormSubmit, falls back to the visitor's email app */
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const name = document.getElementById('cf-name').value;
-  const email = document.getElementById('cf-email').value;
-  const comment = document.getElementById('cf-comment').value;
-  const subject = encodeURIComponent(`Portfolio contact from ${name}`);
-  const body = encodeURIComponent(`${comment}\n\n— ${name} (${email})`);
-  window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-  document.getElementById('formNote').style.display = 'block';
+  const form = e.target;
+  const note = document.getElementById('formNote');
+  const btn = document.getElementById('sendBtn');
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const comment = document.getElementById('cf-comment').value.trim();
+
+  if(form.elements['_honey'].value) return; // spam trap
+
+  note.style.display = 'block';
+  note.textContent = 'Sending...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name, email, message: comment,
+        _subject: `Portfolio message from ${name}`,
+        _template: 'table'
+      })
+    });
+    const data = await res.json();
+    if(!res.ok || data.success === 'false' || data.success === false) throw new Error('send failed');
+    note.textContent = 'Thanks, your message was sent!';
+    form.reset();
+  } catch (err) {
+    // fallback: open the visitor's email app with everything filled in
+    note.textContent = 'Opening your email app so you can send it from there.';
+    const subject = encodeURIComponent(`Portfolio message from ${name}`);
+    const body = encodeURIComponent(`${comment}\n\nFrom: ${name} (${email})`);
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 /* ===================== hero network canvas ===================== */
@@ -1019,6 +1194,73 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
     if(!prefersReduced) requestAnimationFrame(step);
   }
   step();
+})();
+
+/* ===================== photo lightbox ===================== */
+(function(){
+  const DETAILS = {
+    vertiv: {
+      img: 'vertiv-photo.jpg', alt: 'Bailey Koestel at Vertiv',
+      title: 'Vertiv', meta: 'Data Operations Intern, May 2026 to Aug 2026',
+      bullets: [
+        'Built an interactive Global Manufacturing Footprint web app giving 30,000+ employees and customers real-time visibility into sites, business units, and expansion plans.',
+        'Created Power BI dashboards and custom visualizations for 4+ business units and 20+ product lines.',
+        'Turned complex operational data into self-service insights for strategic decisions.',
+        'Automated manual workflows with AI tools to improve efficiency, accuracy, and data access.',
+        'Presented analytics and automation solutions to company leadership.'
+      ]
+    },
+    snapon: {
+      img: 'snapon-photo.jpg', alt: 'Bailey Koestel at Snap-on',
+      title: 'Snap-on', meta: 'Corporate Risk Analysis Intern, Sep 2025 to May 2026, and again Sep 2026 to present',
+      bullets: [
+        'Now creating and validating the new reporting system.',
+        'Analyzed insurance claim and operational data to spot trends, discrepancies, and risk factors.',
+        'Built and maintained Excel reports with formulas, pivot tables, and data validation.',
+        'Analyzed employee performance and workload, helping leadership see staffing gaps.',
+        'Worked with the team to keep data accurate and consistent for daily operations.'
+      ]
+    }
+  };
+
+  const box = document.getElementById('lightbox');
+  const img = document.getElementById('lbImg');
+  const meta = document.getElementById('lbMeta');
+  const title = document.getElementById('lbTitle');
+  const list = document.getElementById('lbList');
+  const closeBtn = document.getElementById('lbClose');
+  let lastTrigger = null;
+
+  function open(key, trigger){
+    const d = DETAILS[key]; if(!d) return;
+    lastTrigger = trigger;
+    img.src = d.img; img.alt = d.alt;
+    meta.textContent = d.meta;
+    title.textContent = d.title;
+    list.innerHTML = '';
+    d.bullets.forEach(b => { const li = document.createElement('li'); li.textContent = b; list.appendChild(li); });
+    box.classList.add('open');
+    box.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+  function close(){
+    box.classList.remove('open');
+    box.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+    if(lastTrigger) lastTrigger.focus();
+  }
+
+  document.querySelectorAll('.company-photo').forEach(btn => {
+    btn.addEventListener('click', () => open(btn.dataset.company, btn));
+  });
+  closeBtn.addEventListener('click', close);
+  box.addEventListener('click', (e) => { if(e.target === box) close(); });
+  document.addEventListener('keydown', (e) => {
+    if(!box.classList.contains('open')) return;
+    if(e.key === 'Escape') close();
+    if(e.key === 'Tab'){ e.preventDefault(); closeBtn.focus(); }
+  });
 })();
 </script>
 </body>
