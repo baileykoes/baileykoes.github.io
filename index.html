@@ -226,6 +226,16 @@
   .nowrap{white-space:nowrap;}
   @media (max-width:600px){ .nowrap{white-space:normal;} }
 
+  .section-tagline{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(1.5rem, 2.4vw, 2rem);
+    line-height:1.25;
+    color:var(--ink);
+    max-width:36ch;
+    margin:0 0 1rem;
+  }
+
   .hero-copy .tagline{
     font-family:var(--serif);
     font-weight:600;
@@ -768,17 +778,14 @@
           <h1 class="big-name">Hi, I'm Bailey Koestel!</h1>
         </div>
         <p class="kicker"><span class="nowrap">Data Science &middot; Business Analytics Concentration</span><br>Carthage College</p>
-        <p class="tagline">Check out some of my tools currently utilized by thousands at Fortune 500 companies!</p>
-        <ul class="hero-bullets">
-          <li class="b-gold">At Vertiv and Snap-on, I built dashboards, automated workflows with AI, and pitched findings to leadership.</li>
-          <li class="b-teal">From interactive maps to Power BI dashboards to AI automation, each project taught me a new tool and a new way to solve problems.</li>
-        </ul>
+        <p class="tagline">I've always been curious about what comes next.</p>
+        <p>That curiosity drove me to major in Data Science at Carthage College, with a concentration in Business Analytics and minors in Mathematics and Business Administration. I like applying that same curiosity to the things I love outside the classroom too, from playing lacrosse to the clubs I'm involved in. Internships at Vertiv and Snap-on gave me a place to grow those analytical skills even further, and turn them into tools other people actually use.</p>
         <div class="hero-actions">
           <a href="#portfolio" class="btn btn-solid">See the projects</a>
           <a href="#contact" class="btn btn-outline">Get in touch</a>
         </div>
         <div class="hero-stats">
-          <div class="stat"><div class="num">5</div><div class="label">FEATURED PROJECTS</div></div>
+          <div class="stat"><div class="num">7</div><div class="label">FEATURED PROJECTS</div></div>
           <div class="stat"><div class="num">2+</div><div class="label">YEARS EXPERIENCE</div></div>
           <div class="stat"><div class="num">2027</div><div class="label">GRAD YEAR</div></div>
         </div>
@@ -800,6 +807,7 @@
     </section>
 
     <section id="portfolio">
+      <p class="section-tagline">Check out some of my tools currently utilized by thousands at Fortune 500 companies!</p>
       <p class="lede">Every project below is tagged by the skill it leans on hardest. Filter by skill, or scroll through everything.</p>
 
       <div class="filters" id="filters">
@@ -815,11 +823,11 @@
         <!-- project cards injected by JS from PROJECTS array -->
       </div>
 
-      <p class="edit-note">Edit note: replace the 4 sample projects in the PROJECTS array (bottom of the file) with your real ones — including your interactive manufacturing map linked to its own HTML page. Also add a headshot.jpg next to index.html (square photo works best) so the circular photo on the home section shows up instead of a blank placeholder.</p>
+      <p class="edit-note">Edit note: images above are temporary stock photos, and the "Open project" link on every card still points to "#". In the PROJECTS array (bottom of the file), swap each img for a real screenshot and each link for the real page: your manufacturing map's live URL, a PDF or screenshot for the Power BI dashboard, a link or embedded slideshow for the Tableau dashboard, a link to your code/repo for the Movie Review Explorer (or attach the .py and .db files), and pictures for the AI Automation Agent. The two Snap-on entries (reporting system and agent productivity) have no visuals yet — that's fine for now, or you can drop the Agent Productivity Analysis project entirely if you'd rather not show it without one.</p>
     </section>
 
     <section id="carthage">
-      <p class="lede">The two paths that shaped how I work with data: the core Data Science major, and the Business Analytics Concentration I built to give it a domain to point at.</p>
+      <p class="lede">At Carthage I was able to tailor my major to my interests and broaden my skills and technical tools. I chose a Business Analytics Concentration where I could apply the data science skills I learned in the core classes to business settings, and also learn about the marketing, financial, and accounting side of business so I have a really well rounded background.</p>
 
       <div class="catalog">
         <div>
@@ -846,6 +854,12 @@
             <tr><td class="code">ACC 2000</td><td>Accounting Fundamentals</td><td class="credits">4</td></tr>
           </table>
           <p style="font-size:0.9rem; color:var(--ink-soft); margin-top:1.2rem;">I built this concentration to pair the technical side of the major with how businesses actually use data — analytical models in MGT 3100, how that data connects to customer behavior in MKT 3130, and how it ties back to the financial statements it's meant to inform in ACC 2000.</p>
+          <h3 style="margin-top:2rem;">Other relevant coursework</h3>
+          <table class="course-table">
+            <tr><td>Econometrics</td><td class="credits">4</td></tr>
+            <tr><td>Statistics for Social Justice</td><td class="credits">4</td></tr>
+            <tr><td>Mathematical Interest Theory</td><td class="credits">4</td></tr>
+          </table>
         </div>
       </div>
     </section>
@@ -940,24 +954,38 @@ const PROJECTS = [
     link: "#"
   },
   {
-    title: "Predicting Course Enrollment",
+    title: "Healthcare Expenditures Dashboard",
+    skill: "Data Visualization",
+    desc: "A Tableau dashboard exploring trends in healthcare expenditure data, presented as a slideshow walkthrough of the findings.",
+    img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800&auto=format&fit=crop",
+    link: "#"
+  },
+  {
+    title: "Movie Review Explorer",
     skill: "Python",
-    desc: "A regression model estimating semester enrollment from historical registration data, built in pandas and scikit-learn.",
+    desc: "A Python project that pulls movie review data through an API into a SQLite database, then queries it to explore rating trends.",
     img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
     link: "#"
   },
   {
-    title: "AI-Automated Reporting Workflow",
+    title: "AI Automation Agent",
     skill: "AI Automation",
-    desc: "Used Microsoft Power Automate and AI tools during my Vertiv internship to automate manual reporting workflows, improving efficiency, accuracy, and data accessibility.",
+    desc: "An AI automation agent I built to take a repetitive workflow off someone's plate and run it automatically instead.",
     img: "https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?q=80&w=800&auto=format&fit=crop",
     link: "#"
   },
   {
-    title: "Insurance Risk Reporting",
+    title: "New Reporting System for Risk Mitigation",
     skill: "Excel",
-    desc: "Built and maintained Excel reports during my Snap-on internship using formulas, pivot tables, and data validation to summarize claims data and surface operational risk trends.",
-    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
+    desc: "Spent 14+ months at Snap-on helping create and validate a new reporting system for risk mitigation and dealers' insurance departments, working cross-functionally with actuaries, financial analysts, and coders. Replaced and consolidated outdated Salesforce reports into 5-6 versatile reports used for all future balancing and financial reporting, and verified claims data going back to 2017.",
+    img: "https://images.unsplash.com/photo-1460925897917-a2c11e0a1bd1?q=80&w=800&auto=format&fit=crop",
+    link: "#"
+  },
+  {
+    title: "Agent Productivity Analysis",
+    skill: "Excel",
+    desc: "Analyzed agents' hours to see how productive each was and whether an additional agent was needed to cover all the tasks and hours.",
+    img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=800&auto=format&fit=crop",
     link: "#"
   }
 ];
