@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Manufacturing Footprint</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js">
+</script>
+<script 
+src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js">
+</script>
+
+
+<style>
+:root{--bg:#0b0d12;--surface:#12151d;--surface2:#181c27;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#dde1ed;--muted:#636880;--accent:#00d4aa;--accent2:#4080ff;--dot-pm:#d4a017;--dot-th:#4080ff;--dot-it:#e04040;--dot-is:#2ecc71}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;font-size:13px;height:auto;display:flex;flex-direction:column;overflow:auto}
+header{padding:10px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+header h1{font-size:15px;font-weight:600}
+header h1 span{color:var(--accent)}
+.hdr-right{display:flex;gap:8px;align-items:center}
+.upload-btn{background:var(--accent);color:#000;border:none;padding:6px 13px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.reset-btn{background:#e04040;color:#fff;border:none;padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+#file-input{display:none}
+
+.main-layout{
+  display:flex;
+  height:780px;
+  overflow:visible;
+  align-items:flex-start;
+  justify-content:flex-start;
+}
+
+.left-panel{width:155px;height:780px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:12px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.title-wrap{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo{
+  height:50px;
+  object-fit:contain;
+  opacity:0.95;
+}
+
+
+
+.chart-box h4,
+.insight-box h4,
+.bot-hdr h3,
+.kpi .kl{
+  color:#ffffff;
+}
+
+
+
+.chart-box .chart-sub{
+  font-size:9px;
+  color:#bfc5d6;
+  opacity:0.9;
+}
+
+
+
+.bar-label{
+  color:#ffffff;
+}
+
+.ss h3{
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.5px;
+  color:#cfd6e6;
+  margin-bottom:4px;
+}
+
+.filter-select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:5px 6px;font-size:10px;font-family:inherit}
+.year-row{display:flex;gap:4px;flex-wrap:wrap;}
+.ybtn{padding:3px 7px;font-size:9px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-family:inherit}
+.ybtn.active{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.center-col{
+  width:1200px;
+  height:780px;   /* 600 map + 180 table */
+  flex:none;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+
+
+.map-wrap{
+  width:1200px;
+  height:600px;
+  flex:none;
+  position:relative;
+  overflow:hidden;
+}
+
+
+
+#map-svg{width:100%;height:100%;display:block}
+.no-data{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,13,18,.85);z-index:20}
+.no-data.hidden{display:none}
+.no-data p{font-size:13px;color:#ffffff}
+.right-panel{width:340px; height:780px; flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.kpi{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;text-align:center}
+.kpi .kl{font-size:8px;color:#ffffff; opacity:.7;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.kpi .kv{font-size:20px;font-weight:700;font-family:monospace}
+.kpi .kv.a{color:var(--accent)}.kpi .kv.b{color:var(--accent2)}
+.kpi .ks{font-size:8px;color:#ffffff;margin-top:1px}
+.chart-box{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px}
+
+.chart-box h4{
+  font-size:10px;
+  color:#ffffff;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  margin-bottom:8px;
+  font-weight:600;
+}
+
+
+.chart-box .chart-sub{
+  font-size:9px;
+  color:#bfc5d6;
+  opacity:0.9;
+margin-top:-6px;margin-bottom:6px;font-style:italic}
+.donut-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:18px;
+}
+.dl-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:10px;
+}
+
+.dl-row span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.dl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dl-pct{margin-left:auto;font-family:monospace;font-size:9px}
+.bar-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.bar-label{font-size:9px;color:#ffffff;width:55px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;height:10px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.bar-val{font-size:9px;font-family:monospace;width:35px}
+.insight-box{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px}
+.insight-box h4{font-size:9px;color:#ffffff;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;font-weight:600}
+.insight-item{padding:5px 8px;margin-bottom:4px;border-radius:4px;border-left:3px solid var(--accent);background:rgba(0,212,170,0.05);font-size:10px;line-height:1.4}
+.insight-item.warn{border-left-color:#e04040;background:rgba(224,64,64,0.05)}
+.insight-item.info{border-left-color:var(--accent2);background:rgba(64,128,255,0.05)}
+.insight-item strong{font-size:11px;color:#fff}
+.insight-item .hl{color:var(--accent);font-weight:600}
+
+
+.bottom-panel{
+  height:180px;
+  flex:none;
+  border-top:1px solid var(--border);
+  background:var(--surface);
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+}
+
+border-top:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;flex-shrink:0}
+.bot-hdr{padding:4px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.bot-hdr h3{font-size:9px;font-weight:600;color:#ffffff;text-transform:uppercase;letter-spacing:.8px}
+.cbadge{background:var(--surface2);border:1px solid var(--border);padding:1px 7px;border-radius:10px;font-size:9px;color:var(--muted);font-family:monospace}
+.tbl-wrap{overflow:auto;flex:1}
+table{width:100%;border-collapse:collapse;font-size:10px}
+thead th{padding:4px 10px;text-align:left;color:#ffffff;font-weight:600;font-size:8px;letter-spacing:.6px;text-transform:uppercase;position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:3px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr:hover td{background:var(--surface2)}
+.bu-badge{display:inline-block;padding:1px 4px;border-radius:3px;font-size:8px;font-weight:600}
+.bu-pm{background:rgba(212,160,23,.15);color:#d4a017}
+.bu-th{background:rgba(64,128,255,.15);color:#4080ff}
+.bu-it{background:rgba(224,64,64,.15);color:#e04040}
+.bu-is{background:rgba(46,204,113,.15);color:#2ecc71}
+#tooltip{position:fixed;z-index:9999;background:var(--surface);border:1px solid var(--border2);border-radius:9px;padding:12px 14px;min-width:260px;max-width:350px;pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 8px 28px rgba(0,0,0,.6)}
+#tooltip.vis{opacity:1}
+#tooltip h4{font-size:12px;font-weight:600;margin-bottom:2px}
+.tt-sub{font-size:10px;color:var(--muted);margin-bottom:6px}
+.tt-row{display:flex;justify-content:space-between;font-size:10px;padding:2px 0;border-bottom:1px solid var(--border)}
+.tt-lbl{color:var(--muted)}.tt-v{font-weight:500;font-family:monospace;font-size:9px}
+.tt-bu{display:inline-block;padding:2px 5px;border-radius:3px;font-size:9px;font-weight:600;margin:2px 2px 0 0}
+.tt-section{margin-top:5px;padding-top:5px;border-top:1px solid var(--border)}
+.tt-section-title{font-size:8px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.tt-bar{display:flex;align-items:center;gap:5px;font-size:9px;margin:2px 0}
+.tt-bar-fill{height:5px;border-radius:3px;min-width:2px}
+.tt-bar-label{color:#ffffff;width:65px}
+.tt-bar-val{font-family:monospace;font-size:8px}
+.tt-trend{display:flex;align-items:center;gap:4px;font-size:9px;margin:3px 0}
+.tt-trend-year{color:var(--muted);width:30px}
+.tt-trend-val{font-family:monospace;width:50px}
+.tt-trend-bar{flex:1;height:6px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.tt-trend-fill{height:100%;border-radius:3px}
+.tt-delta{font-size:9px;font-family:monospace;width:60px;text-align:right}
+.tt-delta.pos{color:#2ecc71}.tt-delta.neg{color:#e04040}.tt-delta.flat{color:var(--muted)}
+.tt-net{display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.03)}
+.tt-net-label{font-size:9px;color:var(--muted)}.tt-net-val{font-size:11px;font-weight:600;font-family:monospace}
+</style>
+</head>
+<body>
+
+
+<header>
+  <div class="title-wrap">
+    <h1>Global Manufacturing <span>Footprint</span></h1>
+  </div>
+
+  <div class="hdr-right">
+    <button class="reset-btn" onclick="resetAll()">⟲ Reset</button>
+  </div>
+</header>
+
+<div class="main-layout">
+<aside class="left-panel">
+<div class="ss"><h3>Region</h3><select class="filter-select" id="f-region" onchange="applyFilters()"><option value="">All Regions</option></select></div>
+<div class="ss"><h3>Business Unit</h3><select class="filter-select" id="f-bu" onchange="applyFilters()"><option value="">All BUs</option>
+<option value="Industrial Systems">Industrial Systems</option>
+<option value="Applied Technologies">Applied Technologies</option>
+<option value="Manufacturing Operations">Manufacturing Operations</option>
+<option value="Distribution Networks">Distribution Networks</option>
+</select></div>
+<div class="ss"><h3>Category</h3><select class="filter-select" id="f-cat" onchange="applyFilters()"><option value="">All Categories</option></select></div>
+<div class="ss"><h3>Productive / Non-Productive</h3><select class="filter-select" id="f-prod" onchange="applyFilters()"><option value="">All</option><option value="Productive">Productive</option><option value="Non-Productive">Non-Productive</option></select></div>
+<div class="ss"><h3>Product Line</h3><select class="filter-select" id="f-pl" onchange="applyFilters()"><option value="">All Product Lines</option></select></div>
+<div class="ss"><h3>Factory</h3><select class="filter-select" id="f-fac" onchange="applyFilters()"><option value="">All Factories</option></select></div>
+<div class="ss"><h3>Year</h3><div class="year-row">
+  <button class="ybtn active" data-year="2026">2026</button>
+  <button class="ybtn" data-year="2027">2027</button>
+  <button class="ybtn" data-year="2028">2028</button>
+  <button class="ybtn" data-year="2029">2029</button>
+</div>
+</div>
+<div class="ss" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+<h3>Color (Business Unit)</h3>
+<div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:#d4a017"></div><span style="font-size:10px">Industrial Systems</span></div>
+<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:#4080ff"></div><span style="font-size:10px">Applied Technologies</span></div>
+<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:#e04040"></div><span style="font-size:10px">Manufacturing Operations</span></div>
+<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:#2ecc71"></div><span style="font-size:10px">Distribution Networks</span></div>
+</div>
+</div>
+<div class="ss" style="margin-top:8px">
+<h3>Map Guide</h3>
+<div style="font-size:10px;color:#aaa;line-height:1.4">
+• Dots = factories<br>
+• Color = business unit<br>
+• Hover = full details <br>
+• Adjust browser zoom till screen is filled <br>
+• Filters change visuals and analysis <br>
+• Click reset button to clear filters and reset view 
+
+</div>
+</div>
+</aside>
+<div class="center-col">
+<div class="map-wrap"><svg id="map-svg"></svg><div class="no-data" id="no-data"><p>Portfolio Demonstration Dataset</p></div></div>
+<div class="bottom-panel"><div class="bot-hdr"><h3>Site Details</h3><span class="cbadge" id="table-count">0</span></div><div class="tbl-wrap"><table><thead><tr><th>Factory</th><th>Country</th><th>Region</th><th>BU</th><th>Products</th><th>sqm</th><th>sqft</th><th>Prod%</th><th>Change 26&#x2192;28</th></tr></thead><tbody id="table-body"></tbody></table></div></div>
+</div>
+<aside class="right-panel">
+
+<div style="font-size:12px;font-weight:600;margin-bottom:6px;color:#fff;letter-spacing:.5px">
+  Overall Manufacturing Data
+</div>
+<div class="kpi-grid">
+<div class="kpi"><div class="kl">Total Footprint (SQM)</div><div class="kv a" id="kpi-sqm">&mdash;</div><div class="ks" id="kpi-sqm-s"></div></div><div class="kpi"><div class="kl">Total Footprint (SQFT) </div><div class="kv b" id="kpi-sqf">&mdash;</div><div class="ks" id="kpi-sqf-s"></div></div><div class="kpi"><div class="kl">Factories</div><div class="kv a" id="kpi-plants">&mdash;</div></div><div class="kpi"><div class="kl">Productive Footprint %</div><div class="kv b" id="kpi-prod">&mdash;</div></div></div>
+
+<div style="font-size:12px;font-weight:600;margin-bottom:6px;margin-top:6px;color:#fff;letter-spacing:.5px">
+  Manufacturing (Productive) Footprint
+</div>
+<div class="chart-box"><h4>Productive Footprint by Region</h4><div class="donut-wrap"><svg id="donut-svg" width="120" height="120" style="flex-shrink:0;"></svg><div id="donut-legend" style="display:flex;flex-direction:column;gap:5px; width:130px; flex-shrink:0;"></div></div></div>
+<div class="chart-box"><h4>Top 10 Sites by Productive Footprint (SQM)</h4><p class="chart-sub">Based on productive footprint (sqm)</p><div id="top10-bars"></div></div>
+<div class="chart-box"><h4>Avg Factory Size by Region (SQM)</h4><p class="chart-sub">What regions have the highest productive footprint per number of factories?</p><div id="region-bars"></div></div>
+<div class="chart-box"><h4>Productive Footprint Trend (SQM) 2026&#x2192;2029</h4><div id="trend-bars"></div></div>
+<div class="insight-box"><h4>Key Insights</h4><div id="insights-content"><div class="insight-item">Data will load automatically</div></div></div>
+</aside>
+</div>
+<div id="tooltip"></div><script>
+var allData=[
+{
+Factory:"Atlas Manufacturing",
+Country:"USA",
+Region:"North America",
+BU:"Industrial Systems",
+"Product Line":"Precision Components",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"145000",
+"Final Sq. Mtr (2027) (With Layout Change)":"152000",
+"Final Sq. Mtr (2028) (With Layout Change)":"168000",
+"Final Sq. Mtr (2029) (With Layout Change)":"175000"
+},
+{
+Factory:"Atlas Expansion",
+Country:"USA",
+Region:"North America",
+BU:"Industrial Systems",
+"Product Line":"Precision Components",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"0",
+"Final Sq. Mtr (2027) (With Layout Change)":"25000",
+"Final Sq. Mtr (2028) (With Layout Change)":"50000",
+"Final Sq. Mtr (2029) (With Layout Change)":"65000"
+},
+{
+Factory:"Pioneer Works",
+Country:"Mexico",
+Region:"Latin America",
+BU:"Applied Technologies",
+"Product Line":"Mechanical Systems",
+Catogery:"Fabrication",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"98000",
+"Final Sq. Mtr (2027) (With Layout Change)":"103000",
+"Final Sq. Mtr (2028) (With Layout Change)":"112000",
+"Final Sq. Mtr (2029) (With Layout Change)":"124000"
+},
+{
+Factory:"Pioneer Expansion",
+Country:"Mexico",
+Region:"Latin America",
+BU:"Applied Technologies",
+"Product Line":"Mechanical Systems",
+Catogery:"Fabrication",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"0",
+"Final Sq. Mtr (2027) (With Layout Change)":"18000",
+"Final Sq. Mtr (2028) (With Layout Change)":"45000",
+"Final Sq. Mtr (2029) (With Layout Change)":"72000"
+},
+{
+Factory:"Northstar Campus",
+Country:"Germany",
+Region:"Continental Europe",
+BU:"Manufacturing Operations",
+"Product Line":"Industrial Computing",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"82000",
+"Final Sq. Mtr (2027) (With Layout Change)":"86000",
+"Final Sq. Mtr (2028) (With Layout Change)":"90000",
+"Final Sq. Mtr (2029) (With Layout Change)":"98000"
+},
+{
+Factory:"Alpine Factory",
+Country:"Austria",
+Region:"Continental Europe",
+BU:"Distribution Networks",
+"Product Line":"Structural Assemblies",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"62000",
+"Final Sq. Mtr (2027) (With Layout Change)":"69000",
+"Final Sq. Mtr (2028) (With Layout Change)":"75000",
+"Final Sq. Mtr (2029) (With Layout Change)":"81000"
+},
+{
+Factory:"Vertex India",
+Country:"India",
+Region:"South Asia",
+BU:"Industrial Systems",
+"Product Line":"Equipment Housings",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"112000",
+"Final Sq. Mtr (2027) (With Layout Change)":"124000",
+"Final Sq. Mtr (2028) (With Layout Change)":"139000",
+"Final Sq. Mtr (2029) (With Layout Change)":"156000"
+},
+{
+Factory:"Vertex India Expansion",
+Country:"India",
+Region:"South Asia",
+BU:"Industrial Systems",
+"Product Line":"Equipment Housings",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"0",
+"Final Sq. Mtr (2027) (With Layout Change)":"22000",
+"Final Sq. Mtr (2028) (With Layout Change)":"47000",
+"Final Sq. Mtr (2029) (With Layout Change)":"70000"
+},
+{
+Factory:"Pacific Systems",
+Country:"Malaysia",
+Region:"Southeast Asia",
+BU:"Applied Technologies",
+"Product Line":"Material Handling",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"71000",
+"Final Sq. Mtr (2027) (With Layout Change)":"72000",
+"Final Sq. Mtr (2028) (With Layout Change)":"83000",
+"Final Sq. Mtr (2029) (With Layout Change)":"97000"
+},
+{
+Factory:"Pacific Expansion",
+Country:"Malaysia",
+Region:"Southeast Asia",
+BU:"Applied Technologies",
+"Product Line":"Material Handling",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"0",
+"Final Sq. Mtr (2027) (With Layout Change)":"15000",
+"Final Sq. Mtr (2028) (With Layout Change)":"38000",
+"Final Sq. Mtr (2029) (With Layout Change)":"60000"
+},
+{
+Factory:"Aurora Tech",
+Country:"China",
+Region:"East Asia",
+BU:"Manufacturing Operations",
+"Product Line":"Monitoring Systems",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"95000",
+"Final Sq. Mtr (2027) (With Layout Change)":"101000",
+"Final Sq. Mtr (2028) (With Layout Change)":"110000",
+"Final Sq. Mtr (2029) (With Layout Change)":"121000"
+},
+{
+Factory:"Summit Electronics",
+Country:"Canada",
+Region:"North America",
+BU:"Manufacturing Operations",
+"Product Line":"Control Modules",
+Catogery:"Assembly",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"68000",
+"Final Sq. Mtr (2027) (With Layout Change)":"72000",
+"Final Sq. Mtr (2028) (With Layout Change)":"79000",
+"Final Sq. Mtr (2029) (With Layout Change)":"85000"
+},
+{
+Factory:"Coastal Thermal",
+Country:"Spain",
+Region:"Continental Europe",
+BU:"Applied Technologies",
+"Product Line":"Custom Manufacturing",
+Catogery:"Fabrication",
+"Productive / Non-Productive":"Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"74000",
+"Final Sq. Mtr (2027) (With Layout Change)":"80000",
+"Final Sq. Mtr (2028) (With Layout Change)":"89000",
+"Final Sq. Mtr (2029) (With Layout Change)":"94000"
+},
+{
+Factory:"Eastern Logistics",
+Country:"Singapore",
+Region:"Southeast Asia",
+BU:"Distribution Networks",
+"Product Line":"Packaged Solutions",
+Catogery:"Warehouse",
+"Productive / Non-Productive":"Non-Productive",
+"Final Sq. Mtr (2026) (With Layout Change)":"55000",
+"Final Sq. Mtr (2027) (With Layout Change)":"61000",
+"Final Sq. Mtr (2028) (With Layout Change)":"68000",
+"Final Sq. Mtr (2029) (With Layout Change)":"72000"
+}
+],filteredData=[],activeBU='all',activeRegion='all',activeYear='2026';
+var projection,pathGen,svg,g,zoom,mapW=900,mapH=500;
+
+
+function getBUColor(bu){
+if(!bu)return'#888';
+if(bu.indexOf('Industrial Systems')>=0)return'#d4a017';
+if(bu.indexOf('Applied Technologies')>=0)return'#4080ff';
+if(bu.indexOf('Manufacturing Operations')>=0)return'#e04040';
+if(bu.indexOf('Distribution Networks')>=0)return'#2ecc71';
+return'#888';
+}
+
+function buClass(bu){if(!bu)return'';if(bu.indexOf('Industrial Systems')>=0)
+if(bu.indexOf('Applied Technologies')>=0)
+if(bu.indexOf('Manufacturing Operations')>=0)
+if(bu.indexOf('Distribution Networks')>=0)return'bu-is';return'';}
+function buShort(bu){
+if(!bu)return'';
+if(bu.indexOf('Industrial Systems')>=0)return'Industrial Systems';
+if(bu.indexOf('Applied Technologies')>=0)return'Applied Technologies';
+if(bu.indexOf('Manufacturing Operations')>=0)return'Manufacturing Operations';
+if(bu.indexOf('Distribution Networks')>=0)return'Distribution Networks';
+return bu;
+}
+function getSqm(row,year){var v=row['Final Sq. Mtr ('+year+') (With Layout Change)']||row['Sq. Mtr ('+year+')']||'0';return parseFloat(String(v).replace(/,/g,''))||0;}
+
+function dotR(){
+  return 4;
+}
+
+
+function regionColor(r){
+  if(!r) return '#888';
+  var rl = r.toLowerCase();
+
+if(rl.indexOf('north america') >= 0) return '#4080ff';
+if(rl.indexOf('latin america') >= 0) return '#5fa8ff';
+
+if(rl.indexOf('continental europe') >= 0) return '#f5c542';
+
+if(rl.indexOf('east asia') >= 0) return '#6bd66b';
+
+if(rl.indexOf('south asia') >= 0) return '#ff8c00';
+
+if(rl.indexOf('southeast asia') >= 0) return '#1f7a3e';
+  return '#888';
+}
+
+function fmtNum(n){return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1000?Math.round(n/1000)+'K':Math.round(n).toString();}
+function fmtDelta(from,to){if(from===0&&to===0)return{text:'\u2014',cls:'flat'};if(from===0&&to>0)return{text:'NEW',cls:'pos'};var d=to-from,pct=from>0?Math.round(d/from*100):0;if(d>0)return{text:'+'+fmtNum(d)+' (+'+pct+'%)',cls:'pos'};if(d<0)return{text:'-'+fmtNum(Math.abs(d))+' ('+pct+'%)',cls:'neg'};return{text:'No change',cls:'flat'};}
+
+function cleanName(name){
+  if(!name)return'';
+  return name.replace(/Sz[^\s,]*/gi,function(m){
+    if(m.toLowerCase().indexOf('kesfe')>=0||m.toLowerCase().indexOf('kesfeh')>=0)return'Sz\u00e9kesfeh\u00e9rv\u00e1r';
+    return m;
+  }).replace(/\ufffd/g,'e');
+}
+
+var KNOWN={
+
+'atlas manufacturing':[-104,39],
+'atlas expansion':[-103.6,39.15],
+
+'pioneer works':[-101,24],
+'pioneer expansion':[-100.7,24.2],
+
+'northstar campus':[10.5,51],
+
+'alpine factory':[14,47],
+
+'vertex india':[77,21],
+'vertex india expansion':[77.3,21.2],
+
+'pacific systems':[102.5,4.0],
+'pacific expansion':[102.8,3.8],
+
+'aurora tech':[108,31],
+
+'summit electronics':[-106,55],
+
+'coastal thermal':[-3.7,40.4],
+
+'eastern logistics':[103.8,1.35]
+
+};var CC={'USA':[-95,38],'Mexico':[-102,23],'Ireland':[-8,53],'Italy':[12,42],'Croatia':[15.5,45.5],'Slovakia':[19,48.5],'Czech Republic':[15.5,49.8],'Hungary':[19,47],'Northern Ireland':[-7,54.5],'UK':[-2,54],'China':[104,35],'India':[78,20],'Malaysia':[103.7,1.5],'United Arab Emirates':[55.9,25.8]};
+
+function getCoords(row){
+  var f=(row['Factory']||'').toLowerCase().trim();
+
+  if(f.indexOf('sz')>=0&&(f.indexOf('kesfe')>=0||f.indexOf('kesfeh')>=0||f.indexOf('\ufffd')>=0)){
+    f=f.replace(/sz[^\s,]*/g,'sz\u00e9kesfeh\u00e9rv\u00e1r');
+  }
+  if((row['Country']||'').indexOf('Hungary')>=0&&f.indexOf('great lakes')>=0){
+    return[18.41,47.19];
+  }
+  if(KNOWN[f])return KNOWN[f];
+  for(var k in KNOWN){if(f.indexOf(k)>=0)return KNOWN[k];}
+  if((row['Country']||'').indexOf('Hungary')>=0)return[18.41,47.19];
+  return CC[row['Country']]||null;
+}
+
+
+
+var GROUPS={
+'Atlas Campus, USA':['atlas manufacturing','atlas expansion'],
+'Pioneer Campus, Mexico':['pioneer works','pioneer expansion'],
+'Vertex India Campus':['vertex india','vertex india expansion'],
+'Pacific Campus':['pacific systems','pacific expansion']
+};
+
+
+// 0=right, Math.PI=left, -Math.PI/2=top, Math.PI/2=bottom
+var HINTS={
+'atlas campus, usa':0,
+'pioneer campus, mexico':Math.PI*0.75,
+'vertex india campus':Math.PI/4,
+'pacific campus':Math.PI,
+
+'northstar campus':Math.PI,
+'alpine factory':0,
+'coastal thermal':Math.PI,
+'summit electronics':Math.PI*0.75,
+'eastern logistics':Math.PI*0.25,
+'aurora tech':Math.PI
+};
+
+function getGroupKey(f){var fl=f.toLowerCase().trim();for(var l in GROUPS){for(var i=0;i<GROUPS[l].length;i++){if(fl===GROUPS[l][i]||fl.indexOf(GROUPS[l][i])>=0)return l;}}return null;}
+
+function buildGroups(rows){
+  var groups={},ungrouped=[];
+  rows.forEach(function(row){
+    var factory=(row['Factory']||'').trim();
+    var coords=getCoords(row);if(!coords)return;
+    var gk=getGroupKey(factory);
+    if(gk){
+      if(!groups[gk])groups[gk]={label:gk,factories:{}};
+      if(!groups[gk].factories[factory])groups[gk].factories[factory]={name:factory,coords:coords,rows:[],bus:[],pls:[],chg:[]};
+      var fac=groups[gk].factories[factory];
+      fac.rows.push(row);
+      if(row['BU']&&fac.bus.indexOf(row['BU'])<0)fac.bus.push(row['BU']);
+      if(row['Product Line']&&fac.pls.indexOf(row['Product Line'])<0)fac.pls.push(row['Product Line']);
+      var c=(row['Key Footprint Changes']||'').trim();if(c&&fac.chg.indexOf(c)<0)fac.chg.push(c);
+    }else{
+      var ex=null;for(var i=0;i<ungrouped.length;i++){if(ungrouped[i].name===factory){ex=ungrouped[i];break;}}
+      if(!ex){ex={name:factory,coords:coords,rows:[],bus:[],pls:[],chg:[],label:factory};ungrouped.push(ex);}
+      ex.rows.push(row);
+      if(row['BU']&&ex.bus.indexOf(row['BU'])<0)ex.bus.push(row['BU']);
+      if(row['Product Line']&&ex.pls.indexOf(row['Product Line'])<0)ex.pls.push(row['Product Line']);
+      var c2=(row['Key Footprint Changes']||'').trim();if(c2&&ex.chg.indexOf(c2)<0)ex.chg.push(c2);
+    }
+  });
+  var result=[];
+  for(var label in groups){
+    var grp=groups[label];var facs=[];
+    for(var fn in grp.factories){var f=grp.factories[fn];facs.push({name:f.name,coords:f.coords,rows:f.rows,bus:f.bus,pls:f.pls,chg:f.chg,color:getBUColor(f.bus[0]||''),sqm:f.rows.reduce(function(s,r){return s+getSqm(r,activeYear);},0)});}
+    var cx=facs.reduce(function(s,f){return s+f.coords[0];},0)/facs.length;
+    var cy=facs.reduce(function(s,f){return s+f.coords[1];},0)/facs.length;
+    result.push({type:'group',label:label,factories:facs,centroid:[cx,cy]});
+  }
+  ungrouped.forEach(function(u){
+    result.push({type:'single',label:u.name,factories:[{name:u.name,coords:u.coords,rows:u.rows,bus:u.bus,pls:u.pls,chg:u.chg,color:getBUColor(u.bus[0]||''),sqm:u.rows.reduce(function(s,r){return s+getSqm(r,activeYear);},0)}],centroid:u.coords});
+  });
+  return result;
+}
+
+var locGroups=[];
+
+function applyFilters(){
+  var plF=document.getElementById('f-pl').value;
+  var catF=document.getElementById('f-cat').value;
+  var prodF=document.getElementById('f-prod').value;
+  var facF=document.getElementById('f-fac').value;
+  activeBU=document.getElementById('f-bu').value||'all';
+  activeRegion=document.getElementById('f-region').value||'all';
+filteredData = allData.filter(function(d){
+
+  var bu=d['BU']||'';
+  var buOk=activeBU==='all'||bu.toLowerCase().indexOf(activeBU.toLowerCase())>=0;
+
+  var rgOk=activeRegion==='all'||(d['Region']||'').toLowerCase()===activeRegion.toLowerCase();
+
+  var plOk=!plF||(d['Product Line']||'')===plF;
+  var catOk=!catF||(d['Catogery']||'').indexOf(catF)>=0;
+  var facOk=!facF||(d['Factory']||'')===facF;
+
+  var prodVal = (
+    d['Productive / Non-Productive'] ||
+    d['Productive Footprint / Non-Productive Footprint'] ||
+    ''
+  ).toLowerCase().trim();
+
+  var prodOk = true;
+  if (prodF) {
+    if (prodF === 'Productive') prodOk = prodVal === 'productive';
+    else if (prodF === 'Non-Productive') prodOk = prodVal === 'non-productive';
+  }
+
+  var sqm = getSqm(d, activeYear);
+  var capOk = sqm > 0;
+
+  return buOk && rgOk && plOk && catOk && facOk && prodOk && capOk;
+});
+
+  locGroups=buildGroups(filteredData);
+  renderMap();renderTable();renderCharts();renderInsights();zoomToRegion();
+}
+
+
+function regionBarColor(r){
+  return regionColor(r);
+}
+
+
+function zoomToRegion(){
+  var bounds={amer:[-140,0,-50,60],emea:[-20,25,65,70],china:[90,15,135,50],india:[60,0,95,40],asia:[45,-15,145,60]};
+  if(activeRegion==='all'){svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity);}
+  else{var b=bounds[activeRegion.toLowerCase()];if(b){var p0=projection([b[0],b[3]]),p1=projection([b[2],b[1]]);if(p0&&p1){var dx=Math.abs(p1[0]-p0[0]),dy=Math.abs(p1[1]-p0[1]);var scale=Math.min(mapW/dx,mapH/dy)*0.55;var cx=(p0[0]+p1[0])/2,cy=(p0[1]+p1[1])/2;svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity.translate(mapW/2-cx*scale,mapH/2-cy*scale).scale(scale));}}}
+}
+
+function renderMap(){
+  if(!g)return;g.selectAll('.site-group,.label-group').remove();
+  var W=mapW,H=mapH;var labelItems=[];
+  locGroups.forEach(function(grp){
+    var proj=projection(grp.centroid);if(!proj||isNaN(proj[0]))return;
+    var count = grp.factories.length;
+
+grp.factories.forEach(function(fac, idx){
+
+var base = projection(fac.coords);
+  if(!base) return;
+
+  var offsets = [
+    [0,0],
+    [4,0],
+    [-4,0],
+    [0,4],
+    [0,-4],
+    [3,3],
+    [-3,3],
+    [3,-3],
+    [-3,-3]
+  ];
+
+  var off = offsets[idx] || [0,0];
+
+  var x = base[0] + off[0];
+  var y = base[1] + off[1];
+
+
+
+var name = (fac.name || '').toLowerCase();
+
+
+if(name.indexOf('condesa mexicali') >= 0){
+  x -= 7;
+  y += 4;
+}
+if(name.indexOf('tijuana') >= 0){
+  x += 6;
+  y -= 3;
+}
+
+if(name.indexOf('burnfoot') >= 0){
+  y += 8;
+}
+if(name.indexOf('letterkenny') >= 0){
+  x -= 8;
+}
+if(name.indexOf('campsie') >= 0){
+  y -= 8;
+}
+
+
+if(name === 'ironton'){
+  x -= 3;
+  y += 1;
+}
+if(name.indexOf('ironton expansion') >= 0){
+  x += 6;
+  y += 2;
+}
+
+
+if(name === 'pelzer'){
+  x -= 6;
+  y += 4;
+}
+if(name === 'pelzer 2.0'){
+  x += 6;
+  y += 2;
+}
+if(name === 'pelzer 3.0'){
+  y -= 6;
+}
+
+
+if(name === 'rak'){
+  x -= 2;
+  y += 1;
+}
+
+if(name.indexOf('vertiv al hamra') >= 0){
+  x += 2;
+  y -= 1;
+}
+
+
+if(name === 'chakan'){
+  x -= 6;
+  y += 2;
+}
+if(name === 'chakan 2.0'){
+  x += 4;
+  y -= 1;
+}
+
+
+if(name.indexOf('corry') >= 0){
+  x -= 4;
+  y += 5;
+}
+if(name.indexOf('edinboro') >= 0){
+  x += 4;
+  y -= 5;
+}
+
+
+if(name === 'suzhou'){
+  x -= 5;
+  y += 2;
+}
+if(name === 'suzhou 2.0'){
+  x += 5;
+  y -= 2;
+}
+
+
+fac.renderX = x;
+fac.renderY = y;
+
+
+
+
+
+  var r = dotR(fac.sqm);
+
+  var dg=g.append('g')
+  .attr('class','site-group');
+g.node().appendChild(dg.node());
+
+  dg.append('circle')
+  .attr('cx',x)
+  .attr('cy',y)
+  .attr('r',r)
+  .attr('fill',fac.color)
+  .attr('fill-opacity',0.95)
+  .attr('stroke',fac.color)
+  .attr('stroke-width',1)
+.attr('filter','drop-shadow(0 0 2px rgba(0,0,0,0.6))')
+  .attr('stroke-opacity',0.3)
+  .style('cursor','pointer')
+  .on('mouseenter',function(evt){showTT(evt,fac);})
+  .on('mousemove',moveTT)
+  .on('mouseleave',hideTT);
+});
+
+
+grp.factories.forEach(function(fac){
+
+  var name = (fac.name || '').toLowerCase();
+
+  if(name.indexOf('reynosa expansion') >= 0){
+
+    if(fac.sqm <= 0) return;
+
+    var base = [fac.renderX, fac.renderY];
+
+
+var dist = 85;        // 🔥 controls how far away it is
+var angle = Math.PI / 3;   // bottom-right direction
+
+var lx = base[0] + Math.cos(angle) * dist;
+var ly = base[1] + Math.sin(angle) * dist;
+
+
+    var lw = 95;
+    var labelText = "Reynosa Expansion";
+
+    var lg = g.append('g')
+      .attr('class','label-group')
+      .style('pointer-events','none');
+
+    lg.append('line')
+      .attr('x1', base[0])
+      .attr('y1', base[1])
+      .attr('x2', lx)
+      .attr('y2', ly)
+      .attr('stroke','rgba(200,200,220,0.35)')
+      .attr('stroke-width',1);
+
+    lg.append('rect')
+      .attr('x', lx - lw/2)
+      .attr('y', ly - 9)
+      .attr('width', lw)
+      .attr('height', 14)
+      .attr('rx', 2)
+      .attr('fill','rgba(15,18,25,0.8)')
+      .attr('stroke','rgba(255,255,255,0.08)');
+
+    lg.append('text')
+      .attr('x', lx)
+      .attr('y', ly)
+      .attr('text-anchor','middle')
+      .attr('font-size','10px')
+      .attr('fill','#e3e7f2')
+      .attr('font-weight','600')
+      .text(labelText);
+  }
+});
+
+
+    var allBus=[];grp.factories.forEach(function(f){f.bus.forEach(function(b){if(allBus.indexOf(b)<0)allBus.push(b);});});
+    var buLabel=allBus.map(function(b){return buShort(b);}).join(' / ').substring(0,30);
+    var displayLabel=cleanName(grp.label);
+    var lw = Math.max(60, displayLabel.length * 6);
+    var lk=grp.label.toLowerCase();
+var customDist = 45; 
+var dx = 0;
+var dy = 0;
+
+// manual tweaks
+// Portfolio dataset tweaks
+// Atlas = right and slightly down
+if(lk === 'atlas campus, usa'){
+  dx = 22;
+  dy = 10;
+  customDist = 55;
+}
+
+// Mexico = bottom left
+if(lk === 'pioneer campus, mexico'){
+  dx = -25;
+  dy = 22;
+  customDist = 60;
+}
+
+// Northstar = only slightly farther
+if(lk === 'northstar campus'){
+  dx = -12;
+  dy = -4;
+  customDist = 70;
+}
+
+// Alpine = only slightly farther
+if(lk === 'alpine factory'){
+  dx = 14;
+  dy = 0;
+  customDist = 70;
+}
+
+// Pacific = left of dot
+if(lk === 'pacific campus'){
+  dx = -20;
+  dy = 0;
+  customDist = 55;
+}
+
+if(lk === 'summit electronics'){
+  dx = -15;
+  dy = -12;
+  customDist = 75;
+}
+
+// Coastal closer
+if(lk === 'coastal thermal'){
+  dx = -12;
+  dy = 8;
+  customDist = 60;
+}
+
+if(lk === 'eastern logistics'){
+  dx = 15;
+  dy = -10;
+  customDist = 70;
+}
+
+if(lk.indexOf('sz') >= 0){
+  dx = 75;   
+  dy = 5;
+}
+if(lk === 'rak, uae'){
+  dx = 10;
+  dy = 8;
+}
+
+if(lk === 'anderson'){
+  customDist = 55;
+}
+
+
+
+if(lk === 'suzhou, china'){
+  dx = 12;
+  dy = 20;
+  customDist = 75;
+}
+
+if(lk === 'ironton'){
+  dx = -10;
+  dy = 8;
+  customDist = 75;
+}
+
+
+
+
+if(lk === 'monterrey, mx'){
+  dy = 10;
+  customDist = 40;
+}
+
+if(lk.indexOf('condesa mexicali') >= 0){
+  dx = -12;
+  dy = 12;
+  customDist = 40;
+}
+
+if(lk === 'pelzer, sc'){
+  dy = 10;
+  customDist = 38;
+}
+
+    var angle;
+    if(HINTS[lk]!==undefined){angle=HINTS[lk];}
+    else{var found=false;for(var k in HINTS){if(lk.indexOf(k)>=0){angle=HINTS[k];found=true;break;}}if(!found)angle=Math.atan2(proj[1] - (H/2 + 40), proj[0] - W/2);}
+
+
+if(lk === 'reynosa, mx'){
+  angle = Math.PI / 4;
+  dx = 18;      
+  dy = 14;  
+  customDist = 50;
+}
+
+
+if(lk.indexOf('ironton expansion') >= 0){
+  angle = 0.2; 
+  dx = 0;
+  dy = 0;
+  customDist = 55; // locks it in place more
+}
+
+
+if(lk === 'chakan, india'){
+  angle = Math.PI * 0.8;
+  dx = -10;      
+  dy = 4; 
+  customDist = 45;
+}
+
+if(lk === 'franklin furnace'){
+  dx = 20;
+  dy = 2;
+  customDist = 42;
+}
+
+
+if(lk === 'bologna'){
+  angle = Math.PI * 0.6;
+  dx = 6;
+  dy = 6;
+  customDist = 40;
+}
+
+if(lk === 'tognana'){
+  angle = Math.PI; 
+  dx = -6;
+  dy = -15;
+  customDist = 40;
+}
+
+    labelItems.push({proj: [
+  grp.factories[0].renderX,
+  grp.factories[0].renderY
+],angle:angle,lw:lw,lh:18,
+lx: grp.factories[0].renderX + Math.cos(angle)*customDist + dx,
+ly: grp.factories[0].renderY + Math.sin(angle)*customDist + dy,
+ labelText:displayLabel, color:grp.factories[0].color});
+  });
+  // Collision detection - 400 iterations
+  for(var iter=0;iter<400;iter++){
+    var moved=false;
+    for(var i=0;i<labelItems.length;i++){for(var j=i+1;j<labelItems.length;j++){
+      var a=labelItems[i],b=labelItems[j];
+      var ox=Math.max(0,(a.lw+b.lw)/2+12-Math.abs(b.lx-a.lx));
+      var oy=Math.max(0,(a.lh+b.lh)/2+10-Math.abs(b.ly-a.ly));
+      if(ox>0&&oy>0){var dx2=b.lx-a.lx||0.1,dy2=b.ly-a.ly||0.1;var len=Math.sqrt(dx2*dx2+dy2*dy2)||1;var push=Math.min(ox,oy)*0.4+0.3;a.lx-=dx2/len*push;a.ly-=dy2/len*push;b.lx+=dx2/len*push;b.ly+=dy2/len*push;moved=true;}
+    }}
+    labelItems.forEach(function(it){
+      it.lx=Math.max(it.lw/2+4,Math.min(W-it.lw/2-4,it.lx));
+      it.ly=Math.max(14,Math.min(H-14,it.ly));
+      var vx=it.lx-it.proj[0],vy=it.ly-it.proj[1];var dist=Math.sqrt(vx*vx+vy*vy);
+      if(dist<40){var s=40/dist;it.lx=it.proj[0]+vx*s;it.ly=it.proj[1]+vy*s;}
+      if(dist>180){var s2=180/dist;it.lx=it.proj[0]+vx*s2;it.ly=it.proj[1]+vy*s2;}
+      it.lx=Math.max(it.lw/2+4,Math.min(W-it.lw/2-4,it.lx));
+      it.ly=Math.max(14,Math.min(H-14,it.ly));
+    });
+    if(!moved)break;
+  }
+
+  labelItems.forEach(function(it){
+
+  var lg=g.append('g')
+    .attr('class','label-group')
+    .style('pointer-events','none');
+
+
+  lg.append('line')
+    .attr('x1',it.proj[0])
+    .attr('y1',it.proj[1])
+    .attr('x2',it.lx)
+    .attr('y2',it.ly)
+    .attr('stroke', 'rgba(200,200,220,0.35)')
+    .attr('stroke-width',1)
+    .attr('opacity',0.7);
+
+
+  lg.append('rect')
+ .attr('x', it.lx - it.lw/2 - 4)
+  .attr('y', it.ly - 9)
+  .attr('width', it.lw + 8)
+  .attr('height', 14)
+  .attr('rx', 2)
+  .attr('fill', 'rgba(15,18,25,0.75)')
+  .attr('stroke', 'rgba(255,255,255,0.08)')
+  .attr('stroke-width', 0.5);
+
+
+  lg.append('text')
+    .attr('x', it.lx)
+    .attr('y', it.ly)
+    .attr('text-anchor','middle')
+    .attr('font-size','10px')
+.attr('fill','#e3e7f2')
+.attr('font-weight','500')
+    .attr('font-family','system-ui,sans-serif')
+    .text(it.labelText);
+
+});
+}
+
+function showTT(evt,fac){
+  var tt=document.getElementById('tooltip');
+  var s26=fac.rows.reduce(function(s,r){return s+getSqm(r,'2026');},0);
+  var s27=fac.rows.reduce(function(s,r){return s+getSqm(r,'2027');},0);
+  var s28=fac.rows.reduce(function(s,r){return s+getSqm(r,'2028');},0);
+  var sqm=fac.rows.reduce(function(s,r){return s+getSqm(r,activeYear);},0);
+  var sqft=Math.round(sqm*10.764);
+
+var prodRows = fac.rows.filter(function(r){
+  var p = (
+    r['Productive Footprint / Non-Productive Footprint'] || ''
+  ).toLowerCase().trim();
+
+  return p === 'productive';
+});
+
+  var prodSqm=prodRows.reduce(function(s,r){return s+getSqm(r,activeYear);},0);
+  var prodPct=sqm>0?(prodSqm/sqm*100).toFixed(1):0;
+  var asm=fac.rows.filter(function(r){return(r['Catogery']||'').indexOf('Assembly')>=0;}).reduce(function(s,r){return s+getSqm(r,activeYear);},0);
+  var fab=fac.rows.filter(function(r){return(r['Catogery']||'').indexOf('Fabrication')>=0;}).reduce(function(s,r){return s+getSqm(r,activeYear);},0);
+  var wh=fac.rows.filter(function(r){return(r['Catogery']||'').indexOf('Warehouse')>=0;}).reduce(function(s,r){return s+getSqm(r,activeYear);},0);
+  var oth=Math.max(0,sqm-asm-fab-wh);
+  var buBadges=fac.bus.map(function(b){return'<span class="tt-bu '+buClass(b)+'">'+b+'</span>';}).join('');
+  var d27=fmtDelta(s26,s27),d28=fmtDelta(s27,s28),dNet=fmtDelta(s26,s28);
+  var maxYr=Math.max(s26,s27,s28,1);
+  function bar(l,v,c){var p=sqm>0?Math.round(v/sqm*100):0;return'<div class="tt-bar"><span class="tt-bar-label">'+l+'</span><div class="tt-bar-fill" style="width:'+Math.max(p*0.8,2)+'px;background:'+c+'"></div><span class="tt-bar-val">'+Math.round(v*10.764).toLocaleString()+' sqft ('+p+'%)</span></div>';}
+  function tRow(yr,val,d){var p=Math.round(val/maxYr*100);return'<div class="tt-trend"><span class="tt-trend-year">'+yr+'</span><span class="tt-trend-val">'+fmtNum(val)+' m\u00b2</span><div class="tt-trend-bar"><div class="tt-trend-fill" style="width:'+p+'%;background:var(--accent2)"></div></div>'+(d?'<span class="tt-delta '+d.cls+'">'+d.text+'</span>':'')+'</div>';}
+  tt.innerHTML='<h4>'+cleanName(fac.name)+'</h4><div class="tt-sub">'+(fac.rows[0]?fac.rows[0]['Country']:'')+'</div><div style="margin-bottom:5px">'+buBadges+'</div><div class="tt-row"><span class="tt-lbl">Products</span><span class="tt-v">'+(fac.pls.join(', ').substring(0,60)||'\u2014')+'</span></div><div class="tt-row"><span class="tt-lbl">Total ('+activeYear+')</span><span class="tt-v">'+sqm.toLocaleString()+' sqm / '+sqft.toLocaleString()+' sqft</span></div><div class="tt-row"><span class="tt-lbl">Productive</span><span class="tt-v" style="color:'+(prodPct>=70?'#2ecc71':prodPct>=50?'#f5a623':'#e04040')+'">'+prodPct+'%</span></div><div class="tt-section"><div class="tt-section-title">Footprint Trend</div>'+tRow('2026',s26,null)+tRow('2027',s27,d27)+tRow('2028',s28,d28)+'<div class="tt-net"><span class="tt-net-label">Net 2026\u21922028</span><span class="tt-net-val '+dNet.cls+'">'+dNet.text+'</span></div></div><div class="tt-section"><div class="tt-section-title">Mfg Breakdown (SQF)</div>'+bar('Assembly',asm,'#4080ff')+bar('Fabrication',fab,'#d4a017')+bar('Warehouse',wh,'#a855f7')+bar('Other',oth,'#636880')+'</div>'+(fac.chg.length?'<div class="tt-section"><div class="tt-section-title">Key Changes</div><div style="font-size:9px;color:var(--muted)">'+fac.chg.join('; ').substring(0,150)+'</div></div>':'');
+  tt.classList.add('vis');moveTT(evt);
+}
+function moveTT(evt){var tt=document.getElementById('tooltip');var x=evt.clientX+14,y=evt.clientY-10;tt.style.left=(x+370>window.innerWidth?x-380:x)+'px';tt.style.top=(y+400>window.innerHeight?y-410:y)+'px';}
+function hideTT(){document.getElementById('tooltip').classList.remove('vis');}
+
+function renderCharts(){
+
+
+var prodData = filteredData.filter(function(r){
+  var p = (r['Productive / Non-Productive'] 
+        || r['Productive Footprint / Non-Productive Footprint'] 
+        || '').toLowerCase();
+
+  return p.indexOf('productive') >= 0 && p.indexOf('non') < 0;
+});
+
+var dataset = filteredData;
+var totalSqm = dataset.reduce(function(s,r){
+  return s + getSqm(r, activeYear);
+}, 0);
+
+var totalSqf = Math.round(totalSqm * 10.764);
+
+var plantSet = {};
+dataset.forEach(function(r){
+  plantSet[r['Factory']] = true;
+});
+var plantCount = Object.keys(plantSet).length;
+
+var baseData = allData.filter(function(d){
+
+  var bu=d['BU']||'';
+  var buOk = (activeBU==='all'||bu.toLowerCase().indexOf(activeBU.toLowerCase())>=0);
+
+  var rgOk = (activeRegion==='all'||(d['Region']||'').toLowerCase()===activeRegion.toLowerCase());
+
+  var plF = document.getElementById('f-pl').value;
+  var catF = document.getElementById('f-cat').value;
+  var facF = document.getElementById('f-fac').value;
+
+  var plOk = !plF || (d['Product Line']||'')===plF;
+  var catOk = !catF || (d['Catogery']||'').indexOf(catF)>=0;
+  var facOk = !facF || (d['Factory']||'')===facF;
+
+  return buOk && rgOk && plOk && catOk && facOk;
+});
+
+
+var totalAll = filteredData.reduce(function(s,r){
+  return s + getSqm(r, activeYear);
+}, 0);
+
+var prodAll = filteredData.filter(function(r){
+  var p = (
+    r['Productive / Non-Productive'] ||
+    r['Productive Footprint / Non-Productive Footprint'] ||
+    ''
+  ).toLowerCase();
+
+  return p.indexOf('productive') >= 0 && p.indexOf('non') < 0;
+});
+
+var prodSqm = prodAll.reduce(function(s,r){
+  return s + getSqm(r, activeYear);
+}, 0);
+
+var prodPct = totalAll > 0 ? (prodSqm / totalAll * 100).toFixed(1) : 0;
+  document.getElementById('kpi-sqm').textContent=fmtNum(totalSqm);
+  document.getElementById('kpi-sqm-s').textContent=Math.round(totalSqm).toLocaleString()+' sqm';
+  document.getElementById('kpi-sqf').textContent=fmtNum(totalSqf);
+  document.getElementById('kpi-sqf-s').textContent=totalSqf.toLocaleString()+' sqft';
+
+document.getElementById('kpi-plants').textContent = plantCount;
+document.getElementById('kpi-prod').textContent = prodPct + '%';
+
+  // Donut
+  var regionSqm={};prodData.forEach(function(r){var reg=r['Region']||'Other';regionSqm[reg]=(regionSqm[reg]||0)+getSqm(r,activeYear);});
+  var regionArr=Object.entries(regionSqm).sort(function(a,b){return b[1]-a[1];});
+  var donutSvg=d3.select('#donut-svg');donutSvg.selectAll('*').remove();
+  var arc=d3.arc().innerRadius(22).outerRadius(38);var pie=d3.pie().value(function(d){return d[1];}).sort(null);
+  var arcs=pie(regionArr);var dg2=donutSvg.append('g').attr('transform','translate(55,55)');
+  dg2.selectAll('path').data(arcs).enter().append('path').attr('d',arc).attr('fill',function(d){return regionColor(d.data[0]);}).attr('stroke','#12151d').attr('stroke-width',1.5);
+  var topRegion = regionArr[0] ? regionArr[0][0] : '';
+var topPct = regionArr[0] ? (regionArr[0][1] / totalSqm * 100).toFixed(1) : '0';
+
+document.getElementById('donut-legend').innerHTML =
+  '<div style="font-size:11px;font-weight:600;margin-bottom:8px;margin-top:-4px;letter-spacing:0.3px;color:#ffffff;opacity:.9">'
++ topRegion + ' leads productive footprint (' + topPct + '%)'
+  + '</div>' +
+
+  regionArr.map(function(item){
+    var pct=totalSqm>0?(item[1]/totalSqm*100).toFixed(1):'0';
+
+    return '<div class="dl-row">'
+      + '<div class="dl-dot" style="background:'+regionColor(item[0])+'"></div>'
+      + '<span style="color:#ffffff">'+item[0]+'</span>'
+      + '<span class="dl-pct">'+pct+'%</span>'
+      + '</div>';
+  }).join('');
+  // Top 10
+  var facMap = {};
+
+prodData.forEach(function(r){
+  var f = r['Factory'];
+  if(!facMap[f]) facMap[f] = { name: cleanName(f), sqm: 0, color: getBUColor(r['BU']) };
+  facMap[f].sqm += getSqm(r, activeYear);
+});
+
+var facSqm = Object.values(facMap)
+  .sort(function(a,b){ return b.sqm - a.sqm; })
+  .slice(0,10);
+  var maxSqm=facSqm.length?facSqm[0].sqm:1;
+  document.getElementById('top10-bars').innerHTML=facSqm.map(function(f){var pct=Math.round(f.sqm/maxSqm*100);return'<div class="bar-row"><span class="bar-label">'+f.name.substring(0,14)+'</span><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+f.color+'"></div></div><span class="bar-val">'+fmtNum(f.sqm)+'</span></div>';}).join('');
+  // Avg per region
+  var regPlants={},regTotal={};
+
+prodData.forEach(function(r){
+  var reg = r['Region'];
+  if(!reg) return;
+
+  regPlants[reg] = (regPlants[reg] || 0) + 1;
+  regTotal[reg] = (regTotal[reg] || 0) + getSqm(r, activeYear);
+});
+
+  var regAvg=Object.entries(regTotal).map(function(item){return{region:item[0],avg:Math.round(item[1]/(regPlants[item[0]]||1))};}).sort(function(a,b){return b.avg-a.avg;});
+  var maxAvg=regAvg.length?regAvg[0].avg:1;
+  document.getElementById('region-bars').innerHTML=regAvg.map(function(r){var pct=Math.round(r.avg/maxAvg*100);return'<div class="bar-row" style="cursor:pointer" onclick="selectRegion(\''+r.region.replace(/'/g,"\\'")+'\')"><span class="bar-label">'+r.region+'</span><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+regionBarColor(r.region)+'"></div></div><span class="bar-val">'+fmtNum(r.avg)+'</span></div>';}).join('');
+  // Trend
+var prodTrend = filteredData.filter(function(r){
+  var p = (
+    r['Productive / Non-Productive'] ||
+    r['Productive Footprint / Non-Productive Footprint'] ||
+    ''
+  ).toLowerCase();
+
+  return p.indexOf('productive') >= 0 && p.indexOf('non') < 0;
+});
+
+var t26 = prodTrend.reduce((s,r)=>s+getSqm(r,'2026'),0);
+var t27 = prodTrend.reduce((s,r)=>s+getSqm(r,'2027'),0);
+var t28 = prodTrend.reduce((s,r)=>s+getSqm(r,'2028'),0);
+var t29 = prodTrend.reduce((s,r)=>s+getSqm(r,'2029'),0);
+
+  var maxT=Math.max(t26,t27,t28,t29,1);
+var tDelta = t26 > 0 
+  ? ((t29 - t26) / t26 * 100).toFixed(1) 
+  : 0;
+  
+document.getElementById('trend-bars').innerHTML=[
+  ['2026',t26],
+  ['2027',t27],
+  ['2028',t28],
+  ['2029',t29]
+].map(function(item){var pct=Math.round(item[1]/maxT*100);return'<div class="bar-row"><span class="bar-label">'+item[0]+'</span><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:var(--accent2)"></div></div><span class="bar-val">'+fmtNum(item[1])+'</span></div>';}).join('')+'<div style="font-size:9px;color:'+(tDelta>=0?'#2ecc71':'#e04040')+';margin-top:4px;text-align:right">'+(tDelta>=0?'\u2191':'\u2193')+' '+Math.abs(tDelta)+'% (2026\u21922028)</div>';
+
+}
+
+function renderInsights(){
+
+var baseData = allData.filter(function(d){
+
+  var bu=d['BU']||'';
+  var buOk = (activeBU==='all'||bu.toLowerCase().indexOf(activeBU.toLowerCase())>=0);
+
+  var rgOk = (activeRegion==='all'||(d['Region']||'').toLowerCase()===activeRegion.toLowerCase());
+
+  var plF = document.getElementById('f-pl').value;
+  var catF = document.getElementById('f-cat').value;
+  var facF = document.getElementById('f-fac').value;
+
+  var plOk = !plF || (d['Product Line']||'')===plF;
+  var catOk = !catF || (d['Catogery']||'').indexOf(catF)>=0;
+  var facOk = !facF || (d['Factory']||'')===facF;
+
+  return buOk && rgOk && plOk && catOk && facOk;
+});
+
+var prodData = baseData.filter(function(r){
+  var p = (
+    r['Productive / Non-Productive'] ||
+    r['Productive Footprint / Non-Productive Footprint'] ||
+    ''
+  ).toLowerCase();
+
+  return p.indexOf('productive') >= 0 && p.indexOf('non') < 0;
+});
+
+
+var overallData = baseData;
+var totalProdSqm = prodData.reduce(function(s,r){
+  return s + getSqm(r, activeYear);
+}, 0);
+
+var totalOverallSqm = overallData.reduce(function(s,r){
+  return s + getSqm(r, activeYear);
+}, 0);
+
+
+var allFacs = [];
+locGroups.forEach(function(grp){
+  grp.factories.forEach(function(f){
+    allFacs.push(f);
+  });
+});
+
+
+  var countries=[];prodData.forEach(function(r){if(r['Country']&&countries.indexOf(r['Country'])<0)countries.push(r['Country']);});
+  var facMap = {};
+
+prodData.forEach(function(r){
+  var f = r['Factory'];
+  if(!facMap[f]) facMap[f] = 0;
+  facMap[f] += getSqm(r, activeYear);
+});
+
+var facSqm = Object.entries(facMap)
+  .map(function(d){ return {name: d[0], sqm: d[1]}; })
+  .sort(function(a,b){ return b.sqm - a.sqm; });
+  var top5Sqm=facSqm.slice(0,5).reduce(function(s,f){return s+f.sqm;},0);
+  var top5Pct=totalProdSqm>0?Math.round(top5Sqm/totalProdSqm*100):0;
+  var regionList=[];prodData.forEach(function(r){if(r['Region']&&regionList.indexOf(r['Region'])<0)regionList.push(r['Region']);});
+  var regGrowth=regionList.map(function(reg){
+var regRows = prodData.filter(function(r){
+  return r['Region'] === reg;
+});var s26=regRows.reduce(function(s,r){return s+getSqm(r,'2026');},0);var s28=regRows.reduce(function(s,r){return s+getSqm(r,'2028');},0);return{region:reg,growth:s26>0?((s28-s26)/s26*100):0};}).sort(function(a,b){return b.growth-a.growth;});
+  var lowProd=allFacs.filter(function(f){var sqm=f.rows.reduce(function(s,r){return s+getSqm(r,activeYear);},0);var ps=f.rows.filter(function(r){var p=r['Productive / Non-Productive']||'';return p.indexOf('Productive')>=0&&p.indexOf('Non')<0;}).reduce(function(s,r){return s+getSqm(r,activeYear);},0);return sqm>0&&(ps/sqm)<0.5;});
+  var expansionFacs=allFacs.filter(function(f){var s26=f.rows.reduce(function(s,r){return s+getSqm(r,'2026');},0);var s28=f.rows.reduce(function(s,r){return s+getSqm(r,'2028');},0);return s26===0&&s28>0;});
+  var expansionSqm=expansionFacs.reduce(function(s,f){return s+f.rows.reduce(function(ss,r){return ss+getSqm(r,'2028');},0);},0);
+  var html='';
+html += '<div style="font-size:10px;font-weight:600;margin-bottom:6px;color:#ffffff;letter-spacing:.6px;text-transform:uppercase">Productive Insights</div>';
+
+var baseline26 = prodData.reduce(function(s,r){
+  return s + getSqm(r,'2026');
+}, 0);
+
+var growthFrom26 = baseline26 > 0 
+  ? ((totalProdSqm - baseline26) / baseline26 * 100).toFixed(1) 
+  : 0;
+
+
+html += '<div class="insight-item info"><strong>+' 
+  + growthFrom26 
+  + '%</strong> increase in productive footprint vs. 2026</div>';
+
+  html+='<div class="insight-item"><strong>'+top5Pct+'%</strong> of productive footprint concentrated in <strong>top 5 sites</strong> \u2014 indicates concentration risk</div>';
+  if(regGrowth.length&&regGrowth[0].growth>0){html+='<div class="insight-item info"><strong>'+regGrowth[0].region+'</strong> fastest growing at <span class="hl">+'+regGrowth[0].growth.toFixed(1)+'%</span> (2026\u21922028)</div>';}
+  if(lowProd.length>0){html+='<div class="insight-item warn"><strong>'+lowProd.length+'</strong> factor'+(lowProd.length>1?'ies':'y')+' below 50% productive \u2014 optimization opportunity</div>';}
+  if(expansionFacs.length>0){html+='<div class="insight-item info"><strong>'+expansionFacs.length+' new site'+(expansionFacs.length>1?'s':'')+' </strong> adding <span class="hl">'+fmtNum(expansionSqm)+' sqm</span> by 2028</div>';}
+
+
+html += '<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"></div>';
+
+
+html += '<div style="font-size:10px;font-weight:600;margin:6px 0;color:#ffffff;letter-spacing:.6px;text-transform:uppercase">Overall Insights</div>';
+
+
+
+html += '<div class="insight-item info"><strong>'
+  + fmtNum(totalOverallSqm)
+  + '</strong> total global footprint</div>';
+
+var facSet = {};
+overallData.forEach(function(r){
+  facSet[r['Factory']] = true;
+});
+
+html += '<div class="insight-item"><strong>'
+  + Object.keys(facSet).length
+  + '</strong> total active sites in footprint</div>';
+  document.getElementById('insights-content').innerHTML=html||'<div class="insight-item">No significant insights</div>';
+}
+
+function renderTable(){
+  var tbody=document.getElementById('table-body');
+  var allFacs=[];locGroups.forEach(function(grp){grp.factories.forEach(function(f){allFacs.push(f);});});
+  document.getElementById('table-count').textContent=allFacs.length;
+  if(!allFacs.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted)">No data</td></tr>';return;}
+  tbody.innerHTML=allFacs.sort(function(a,b){return b.sqm-a.sqm;}).map(function(fac){
+    var sqm=fac.rows.reduce(function(s,r){return s+getSqm(r,activeYear);},0);
+    var sqft=Math.round(sqm*10.764);
+    var s26=fac.rows.reduce(function(s,r){return s+getSqm(r,'2026');},0);
+    var s28=fac.rows.reduce(function(s,r){return s+getSqm(r,'2028');},0);
+    var delta=fmtDelta(s26,s28);
+    var prodRows = fac.rows.filter(function(r){
+  var p = (
+    r['Productive Footprint / Non-Productive Footprint'] ||
+    ''
+  ).toLowerCase().trim();
+
+  return p === 'productive';
+});
+    var prodSqm2=prodRows.reduce(function(s,r){return s+getSqm(r,activeYear);},0);
+    var prodPct=sqm>0?Math.round(prodSqm2/sqm*100):0;
+    var buBadges=fac.bus.map(function(b){return'<span class="bu-badge '+buClass(b)+'">'+buShort(b)+'</span>';}).join(' ');
+    return'<tr><td style="font-weight:500">'+cleanName(fac.name)+'</td><td>'+(fac.rows[0]?fac.rows[0]['Country']:'')+'</td><td>'+(fac.rows[0]?fac.rows[0]['Region']:'')+'</td><td>'+buBadges+'</td><td style="color:var(--muted);max-width:100px;overflow:hidden;text-overflow:ellipsis">'+fac.pls.join(', ').substring(0,40)+'</td><td style="font-family:monospace">'+sqm.toLocaleString()+'</td><td style="font-family:monospace">'+sqft.toLocaleString()+'</td><td style="font-family:monospace;color:'+(prodPct>=70?'#2ecc71':prodPct>=50?'#f5a623':'#e04040')+'">'+prodPct+'%</td><td style="font-family:monospace;color:'+(delta.cls==='pos'?'#2ecc71':delta.cls==='neg'?'#e04040':'var(--muted)')+'">'+delta.text+'</td></tr>';
+  }).join('');
+}
+
+function selectRegion(region){
+  activeRegion = region;
+  document.getElementById('f-region').value = region;
+  applyFilters();
+}
+
+function resetAll(){
+  activeBU='all';activeRegion='all';activeYear='2026';
+  document.getElementById('f-region').value='';
+  document.getElementById('f-bu').value='';
+  document.getElementById('f-cat').value='';
+  document.getElementById('f-prod').value='';
+  document.getElementById('f-pl').value='';
+  document.getElementById('f-fac').value='';
+  document.querySelectorAll('.ybtn').forEach(function(b){b.classList.toggle('active',b.dataset.year==='2026');});
+  applyFilters();
+}
+
+
+function onDataLoaded(){
+  document.getElementById('no-data').classList.add('hidden');
+  // Populate Region dropdown
+  var regions=[];allData.forEach(function(d){if(d['Region']&&regions.indexOf(d['Region'])<0)regions.push(d['Region']);});
+  regions.sort();
+  var regSel=document.getElementById('f-region');
+  regSel.innerHTML='<option value="">All Regions</option>';
+  regions.forEach(function(r2){regSel.innerHTML+='<option value="'+r2+'">'+r2+'</option>';});
+  // Populate Product Line dropdown
+  var pls=[];allData.forEach(function(d){if(d['Product Line']&&pls.indexOf(d['Product Line'])<0)pls.push(d['Product Line']);});
+  pls.sort();
+  var plSel=document.getElementById('f-pl');
+  plSel.innerHTML='<option value="">All Product Lines</option>';
+  pls.forEach(function(pl){plSel.innerHTML+='<option value="'+pl+'">'+pl+'</option>';});
+  // Populate Category dropdown
+  var cats=[];allData.forEach(function(d){if(d['Catogery']&&cats.indexOf(d['Catogery'])<0)cats.push(d['Catogery']);});
+  cats.sort();
+  var catSel=document.getElementById('f-cat');
+  catSel.innerHTML='<option value="">All Categories</option>';
+  cats.forEach(function(c){catSel.innerHTML+='<option value="'+c+'">'+c+'</option>';});
+  // Populate Factory dropdown
+  var facs=[];allData.forEach(function(d){if(d['Factory']&&facs.indexOf(d['Factory'])<0)facs.push(d['Factory']);});
+  facs.sort();
+  var facSel=document.getElementById('f-fac');
+  facSel.innerHTML='<option value="">All Factories</option>';
+  facs.forEach(function(f){facSel.innerHTML+='<option value="'+f+'">'+f+'</option>';});
+  applyFilters();
+}
+
+document.querySelectorAll('.ybtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    activeYear=b.dataset.year;
+    document.querySelectorAll('.ybtn').forEach(function(x){x.classList.toggle('active',x===b);});
+    applyFilters();
+  });
+});
+
+async function initMap(){
+  var svgEl=document.getElementById('map-svg');
+
+
+mapW = 1200;
+mapH = 600;
+
+
+  svg=d3.select('#map-svg');
+  svg.selectAll('*').remove();
+
+svg
+  .attr('width', mapW)
+  .attr('height', mapH);
+
+
+  projection=d3.geoNaturalEarth1()
+
+    .scale(270)
+    .translate([mapW/2, mapH/2 + 60]);
+
+  pathGen=d3.geoPath().projection(projection);
+
+
+  zoom = d3.zoom()
+    .scaleExtent([1,8])
+    .on('zoom', function(evt){
+      g.attr('transform', evt.transform);
+    });
+
+  svg.call(zoom);
+
+  g = svg.append('g');
+
+var initialScale = 1.2;
+var initialTranslate = [
+  mapW/2 - (mapW/2)*initialScale,
+  mapH/2 - (mapH/2)*initialScale
+];
+
+svg.call(
+  zoom.transform,
+  d3.zoomIdentity
+    .translate(initialTranslate[0], initialTranslate[1])
+    .scale(initialScale)
+);
+
+var defs = svg.append("defs");
+
+var gradient = defs.append("linearGradient")
+  .attr("id","oceanGrad")
+  .attr("x1","0%")
+  .attr("y1","0%")
+  .attr("x2","0%")
+  .attr("y2","100%");
+
+gradient.append("stop")
+  .attr("offset","0%")
+  .attr("stop-color","#0b0f1a");
+
+gradient.append("stop")
+  .attr("offset","100%")
+  .attr("stop-color","#03060d");
+
+svg.insert("rect",":first-child")
+  .attr("width",mapW)
+  .attr("height",mapH)
+  .attr("fill","url(#oceanGrad)");
+
+  try{
+    var world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+
+    var countries = topojson.feature(world, world.objects.countries);
+
+    g.selectAll('path.country')
+      .data(countries.features)
+      .enter()
+      .append('path')
+      .attr('class','country')
+      .attr('d', pathGen)
+.attr('fill','#2a3145')   
+.attr('stroke','#3a455f')  
+.attr('stroke-width',0.6)
+.attr('opacity',0.95)
+      .attr('stroke-width',0.5);
+
+  }catch(e){
+    g.append('path')
+      .datum({type:'Sphere'})
+      .attr('d', pathGen)
+      .attr('fill','#2a3145')
+      .attr('stroke','#3f4a63')
+      .attr('stroke-width',0.6);
+  }
+}
+
+
+window.addEventListener('load', async () => {
+  await initMap();
+  onDataLoaded();
+});
+</script>
+</body>
+</html>
