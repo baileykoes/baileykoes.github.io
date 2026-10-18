@@ -180,6 +180,12 @@
     max-width:16ch;
   }
 
+  h2.section-title.centered{
+    text-align:center;
+    max-width:none;
+    margin:0 0 2.2rem;
+  }
+
   p.lede{
     font-size:1.05rem;
     color:var(--ink-soft);
@@ -595,25 +601,31 @@
     margin:0; padding:0;
     display:flex;
     flex-direction:column;
-    gap:0.75rem;
+    gap:0;
   }
   .competency-list li{
-    display:flex;
-    align-items:center;
-    gap:0.7rem;
+    display:grid;
+    grid-template-columns:9px 1fr;
+    column-gap:0.75rem;
+    padding:0.65rem 0;
+    border-bottom:1px solid var(--line);
+  }
+  .competency-list li:last-child{border-bottom:none;}
+  .competency-list .dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    margin-top:0.35em;
+  }
+  .competency-list .skill-name{
+    font-weight:600;
     font-size:0.95rem;
+    display:block;
   }
-  .competency-list .bar{
-    height:6px;
-    border-radius:3px;
-    flex:1;
-    background:var(--paper-2);
-    position:relative;
-    overflow:hidden;
-  }
-  .competency-list .bar span{
-    position:absolute; left:0; top:0; bottom:0;
-    border-radius:3px;
+  .competency-list .skill-context{
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    display:block;
+    margin-top:0.1rem;
   }
   .resume-card{
     border:1px solid var(--line);
@@ -852,7 +864,7 @@
             <tr><td class="code">MKT 3130</td><td>Marketing Principles</td><td class="credits">4</td></tr>
             <tr><td class="code">ACC 2000</td><td>Accounting Fundamentals</td><td class="credits">4</td></tr>
           </table>
-          <p style="font-size:0.9rem; color:var(--ink-soft); margin-top:1.2rem;">I built this concentration to pair the technical side of the major with how businesses actually use data — analytical models in MGT 3100, how that data connects to customer behavior in MKT 3130, and how it ties back to the financial statements it's meant to inform in ACC 2000.</p>
+          <p style="font-size:0.9rem; color:var(--ink-soft); margin-top:1.2rem;">I built this concentration to pair the technical side of the major with how businesses actually use data. <strong style="color:var(--ink);">MGT 3100</strong> is the foundation, a survey of the mathematical models used in management science and operations research — linear programming, queuing theory, decision analysis, and simulation — applied to real managerial decisions. <strong style="color:var(--ink);">MKT 3130</strong> connects that same data to customer behavior, covering the marketing mix, segmentation, and how a company positions a product based on what the data says about its audience. <strong style="color:var(--ink);">ACC 2000</strong> rounds it out by showing how that data ties back to the financial statements it's meant to inform, through financial ratio analysis, cost-volume-profit analysis, and evaluating capital investments. Together they let me analyze a dataset, understand what it means for customers, and translate that into a financial decision.</p>
           <h3 style="margin-top:2rem;">Other relevant coursework</h3>
           <table class="course-table">
             <tr><td>Econometrics</td><td class="credits">4</td></tr>
@@ -861,21 +873,39 @@
           </table>
         </div>
       </div>
-      <a href="capstone-reflection.pdf" class="btn btn-outline" download style="margin-top:2rem;">Read my capstone reflection (PDF)</a>
+      <div style="display:flex; gap:0.9rem; flex-wrap:wrap; margin-top:2rem;">
+        <a href="concentration-proposal.pdf" class="btn btn-outline" download>Read my concentration proposal (PDF)</a>
+        <a href="capstone-reflection.pdf" class="btn btn-outline" download>Read my capstone reflection (PDF)</a>
+      </div>
     </section>
 
     <section id="resume">
-      <p class="lede"> </p>
+      <h2 class="section-title centered">Resume</h2>
 
       <div class="resume-wrap">
         <div class="resume-card">
           <p style="font-family:var(--mono); font-size:0.78rem; color:var(--ink-soft); margin-top:0;">core competencies</p>
           <ul class="competency-list">
-            <li>Python <div class="bar"><span style="width:90%; background:var(--gold);"></span></div></li>
-            <li>Power BI <div class="bar"><span style="width:88%; background:var(--teal);"></span></div></li>
-            <li>Data Visualization <div class="bar"><span style="width:88%; background:var(--rust);"></span></div></li>
-            <li>AI Automation <div class="bar"><span style="width:82%; background:var(--slate);"></span></div></li>
-            <li>Excel <div class="bar"><span style="width:85%; background:var(--olive);"></span></div></li>
+            <li>
+              <span class="dot" style="background:var(--gold);"></span>
+              <span><span class="skill-name">Python</span><span class="skill-context">Movie Review Explorer, AI Automation Agent</span></span>
+            </li>
+            <li>
+              <span class="dot" style="background:var(--teal);"></span>
+              <span><span class="skill-name">Power BI</span><span class="skill-context">Vertiv business unit dashboards, 4+ business units</span></span>
+            </li>
+            <li>
+              <span class="dot" style="background:var(--rust);"></span>
+              <span><span class="skill-name">Data Visualization</span><span class="skill-context">Global Manufacturing Footprint Map, Tableau healthcare dashboard</span></span>
+            </li>
+            <li>
+              <span class="dot" style="background:var(--slate);"></span>
+              <span><span class="skill-name">AI Automation</span><span class="skill-context">Vertiv reporting workflows, AI Automation Agent</span></span>
+            </li>
+            <li>
+              <span class="dot" style="background:var(--olive);"></span>
+              <span><span class="skill-name">Excel</span><span class="skill-context">Snap-on risk reporting, agent productivity analysis</span></span>
+            </li>
           </ul>
           <p style="margin-top:1.6rem;">B.S. Data Science, Business Analytics Concentration<br>Minors: Mathematics, Business Administration<br>Carthage College — Class of 2027</p>
         </div>
@@ -943,7 +973,7 @@ const PROJECTS = [
     skill: "Data Visualization",
     desc: "An interactive HTML web app built during my Vertiv internship, giving 30,000+ employees and customers real-time visibility into manufacturing sites, business units, and expansion plans worldwide.",
     img: "https://images.unsplash.com/photo-1581091870622-1e6c7c8c8f7c?q=80&w=800&auto=format&fit=crop",
-    link: "projects/manufacturing-map/index.html"
+    link: "#"
   },
   {
     title: "Business Unit Performance Dashboard",
