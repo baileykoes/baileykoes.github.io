@@ -507,6 +507,10 @@
   .project-tag.Data-Visualization{background:var(--rust-bg);}
   .project-tag.AI-Automation{background:var(--slate-bg);}
   .project-tag.Excel{background:var(--olive-bg);}
+  .project-tag.Financial-Analysis{background:var(--gold-bg);}
+  .project-tags{position:absolute; top:0.7rem; left:0.7rem; right:0.7rem; display:flex; flex-wrap:wrap; gap:0.35rem;}
+  .project-tags .project-tag{position:static;}
+  .project-tags.inline{position:static; margin-bottom:0.2rem;}
 
   .project-body{
     padding:1.1rem 1.2rem 1.3rem;
@@ -868,13 +872,12 @@
         <button class="chip" data-skill="Data Visualization">Data Visualization</button>
         <button class="chip" data-skill="AI Automation">AI Automation</button>
         <button class="chip" data-skill="Excel">Excel</button>
+        <button class="chip" data-skill="Financial Analysis">Financial Analysis</button>
       </div>
 
       <div class="project-grid" id="projectGrid">
         <!-- project cards injected by JS from PROJECTS array -->
       </div>
-
-      <p class="edit-note">Edit note: the Global Manufacturing Footprint Map card still has its link set to "#" until its HTML page is added, and the Manufacturing Map, Healthcare, and Movie Review cards still use temporary stock photos. Swap each img in the PROJECTS array (bottom of the file) for a real screenshot when you have one.</p>
     </section>
 
     <section id="carthage">
@@ -1018,52 +1021,50 @@
 const PROJECTS = [
   {
     title: "Global Manufacturing Footprint Map",
-    skill: "Data Visualization",
+    skills: ["Data Visualization"],
     desc: "An interactive HTML web app built during my Vertiv internship, giving 30,000+ employees and customers real-time visibility into manufacturing sites, business units, and expansion plans worldwide.",
     img: "https://images.unsplash.com/photo-1581091870622-1e6c7c8c8f7c?q=80&w=800&auto=format&fit=crop",
     link: "#"
   },
   {
-    title: "Business Unit Performance Dashboard",
-    skill: "Power BI",
+    title: "Demand vs Capacity Power BI Dashboard",
+    skills: ["Power BI"],
     desc: "Built Power BI dashboards during my Vertiv internship covering demand, capacity, revenue, and operational insights across 4+ business units and 20+ product lines.",
-    img: "projects/vertiv-powerbi/1.png",
+    img: "projects/vertiv-powerbi/5.png",
     link: "projects/vertiv-powerbi/"
   },
   {
     title: "Healthcare Expenditures Dashboard",
-    skill: "Data Visualization",
+    skills: ["Data Visualization"],
     desc: "A Tableau dashboard exploring trends in healthcare expenditure data, presented as a slideshow walkthrough of the findings.",
     img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800&auto=format&fit=crop",
     link: "https://docs.google.com/presentation/d/e/2PACX-1vTDVoLCt5UIBl6a4gAsbYmMPsLs-9i9fL7uQKJAGLOVfwNb-Pt54HsQxD4EB0_zv85otw5rbqh_4CL0/pub?start=false&loop=false&delayms=3000"
   },
   {
     title: "Movie Review Explorer",
-    skill: "Python",
-    desc: "A Python project that pulls movie review data from an API into a SQLite database, then analyzes it with Pandas, NumPy, Matplotlib, and regression models. The Python script and database are available to download.",
+    skills: ["Python"],
+    desc: "A Python and Flask web API backed by a SQLite database. Search movies by title, actor, or minimum average rating, and add new movies, actors, and reviews. The Python script and database are available to download.",
     img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
     link: "projects/movie-review-explorer/"
   },
   {
     title: "AI Automation Agent",
-    skill: "AI Automation",
+    skills: ["AI Automation"],
     desc: "An AI agent that classifies AME product families by learning patterns from the existing master hierarchy. It runs directly in Excel and returns confidence-scored recommendations with reasoning and green, yellow, or red stoplight flags.",
     img: "projects/ai-agent/AI_Agent.png",
     link: "projects/ai-agent/"
   },
   {
     title: "New Reporting System for Risk Mitigation",
-    skill: "Excel",
-    desc: "Spent 14+ months at Snap-on helping create and validate a new reporting system for risk mitigation and dealers' insurance departments, working cross-functionally with actuaries, financial analysts, and coders. Replaced and consolidated outdated Salesforce reports into 5-6 versatile reports used for all future balancing and financial reporting, and verified claims data going back to 2017.",
-    img: "https://images.unsplash.com/photo-1460925897917-a2c11e0a1bd1?q=80&w=800&auto=format&fit=crop",
+    skills: ["Excel", "Financial Analysis"],
+    desc: "Spent 14+ months at Snap-on helping create and validate a new reporting system for risk mitigation and dealers' insurance departments, working cross-functionally with actuaries, financial analysts, and coders. Replaced and consolidated outdated Salesforce reports into 5-6 versatile reports used for all future balancing and financial reporting, and verified claims data going back to 2017. I applied accounting and mathematics to verify due to/due from numbers and calculations.",
     link: null,
     note: "Internal Snap-on project — not shareable"
   },
   {
     title: "Agent Productivity Analysis",
-    skill: "Excel",
-    desc: "Analyzed agents' hours to see how productive each was and whether an additional agent was needed to cover all the tasks and hours.",
-    img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=800&auto=format&fit=crop",
+    skills: ["Excel"],
+    desc: "I took into account all the tasks agents do, how many the system says they do, how many are overdue, and how long the tasks take on average, then compared that to the hours spent working. The analysis led to hiring a new agent, so tasks can be assigned to the agents who are fastest at them, with an even amount of work and fewer overdue tasks across the team, which means more productivity.",
     link: null,
     note: "Internal Snap-on project — not shareable"
   }
@@ -1077,14 +1078,15 @@ function slug(s){ return s.replace(/\s+/g,'-'); }
 function renderProjects(filter){
   const grid = document.getElementById('projectGrid');
   grid.innerHTML = '';
-  PROJECTS.filter(p => filter === 'all' || p.skill === filter).forEach(p => {
+  PROJECTS.filter(p => filter === 'all' || p.skills.includes(filter)).forEach(p => {
     const card = document.createElement('div');
     card.className = 'project-card';
+    const tags = `<div class="project-tags${p.img ? '' : ' inline'}">` +
+      p.skills.map(k => `<span class="project-tag ${slug(k)}">${k}</span>`).join('') + `</div>`;
     card.innerHTML = `
-      <div class="project-thumb" style="background-image:url('${p.img}')">
-        <span class="project-tag ${slug(p.skill)}">${p.skill}</span>
-      </div>
+      ${p.img ? `<div class="project-thumb" style="background-image:url('${p.img}')">${tags}</div>` : ''}
       <div class="project-body">
+        ${p.img ? '' : tags}
         <h3>${p.title}</h3>
         <p>${p.desc}</p>
         ${p.link
