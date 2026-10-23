@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Automation Agent | Bailey Koestel</title>
+<meta name="description" content="An AI agent that classifies AME product families inside Excel, with confidence scores, reasoning, and stoplight color-coding.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../project.css">
+</head>
+<body>
+
+<div class="topbar">
+  <span class="who">Bailey Koestel</span>
+  <a class="back" href="../../index.html#portfolio">Back to portfolio</a>
+</div>
+
+<main class="page">
+  <span class="tag ai">AI Automation</span>
+  <h1>AI Automation Agent</h1>
+  <p class="lead">An AI agent that sorts AME product families into the right category, right inside Excel, so nobody has to look each one up by hand.</p>
+  <p class="note">Click the image to enlarge it.</p>
+
+  <button type="button" class="shot wide"><img src="AI_Agent.png" alt="The AI agent running in Excel, showing recommendations with stoplight color-coding"></button>
+
+  <h2>What it does</h2>
+  <ul class="points">
+    <li>Built an AI agent that classifies AME product families by learning patterns from the existing master hierarchy</li>
+    <li>Runs directly in Excel to eliminate manual lookups and reduce classification time</li>
+    <li>Returns confidence-scored recommendations with reasoning and stoplight color-coding (green, yellow, red) <span class="stoplight" aria-hidden="true"><i class="g"></i><i class="y"></i><i class="r"></i></span></li>
+    <li>Shareable with levels of access</li>
+  </ul>
+</main>
+
+<div class="lb" id="lb" aria-hidden="true">
+  <button type="button" class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+<script>
+(function(){
+  var lb = document.getElementById('lb');
+  var img = document.getElementById('lbImg');
+  var closeBtn = document.getElementById('lbClose');
+  var last = null;
+  function open(src, alt, trigger){
+    last = trigger;
+    img.src = src; img.alt = alt;
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+  function close(){
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+    if(last) last.focus();
+  }
+  document.querySelectorAll('.shot').forEach(function(b){
+    b.addEventListener('click', function(){
+      var i = b.querySelector('img');
+      open(i.src, i.alt, b);
+    });
+  });
+  closeBtn.addEventListener('click', close);
+  lb.addEventListener('click', function(e){ if(e.target === lb) close(); });
+  document.addEventListener('keydown', function(e){
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') close();
+    if(e.key === 'Tab'){ e.preventDefault(); closeBtn.focus(); }
+  });
+})();
+</script>
+</body>
+</html>

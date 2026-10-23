@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Unit Performance Dashboard | Bailey Koestel</title>
+<meta name="description" content="Power BI dashboards built during a Vertiv internship covering demand, capacity, revenue, and operations across 4+ business units.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../project.css">
+</head>
+<body>
+
+<div class="topbar">
+  <span class="who">Bailey Koestel</span>
+  <a class="back" href="../../index.html#portfolio">Back to portfolio</a>
+</div>
+
+<main class="page">
+  <span class="tag powerbi">Power BI</span>
+  <h1>Business Unit Performance Dashboard</h1>
+  <p class="lead">Power BI dashboards I built during my Vertiv internship, covering demand, capacity, revenue, and operational insights across 4+ business units and 20+ product lines. Power Query handled the cleaning and shaping of the data behind them.</p>
+  <p class="note">The screenshots below use dummy data. Click any image to enlarge it.</p>
+
+  <ul class="chips" aria-label="Tools used">
+    <li>Power BI</li>
+    <li>Power Query</li>
+  </ul>
+
+  <h2>Dashboard screenshots</h2>
+  <div class="gallery">
+    <button type="button" class="shot"><img src="1.png" alt="Power BI dashboard screenshot 1 of 6"></button>
+    <button type="button" class="shot"><img src="2.png" alt="Power BI dashboard screenshot 2 of 6"></button>
+    <button type="button" class="shot"><img src="3.png" alt="Power BI dashboard screenshot 3 of 6"></button>
+    <button type="button" class="shot"><img src="4.png" alt="Power BI dashboard screenshot 4 of 6"></button>
+    <button type="button" class="shot"><img src="5.png" alt="Power BI dashboard screenshot 5 of 6"></button>
+    <button type="button" class="shot"><img src="6.png" alt="Power BI dashboard screenshot 6 of 6"></button>
+  </div>
+</main>
+
+<div class="lb" id="lb" aria-hidden="true">
+  <button type="button" class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+<script>
+(function(){
+  var lb = document.getElementById('lb');
+  var img = document.getElementById('lbImg');
+  var closeBtn = document.getElementById('lbClose');
+  var last = null;
+  function open(src, alt, trigger){
+    last = trigger;
+    img.src = src; img.alt = alt;
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+  function close(){
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+    if(last) last.focus();
+  }
+  document.querySelectorAll('.shot').forEach(function(b){
+    b.addEventListener('click', function(){
+      var i = b.querySelector('img');
+      open(i.src, i.alt, b);
+    });
+  });
+  closeBtn.addEventListener('click', close);
+  lb.addEventListener('click', function(e){ if(e.target === lb) close(); });
+  document.addEventListener('keydown', function(e){
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') close();
+    if(e.key === 'Tab'){ e.preventDefault(); closeBtn.focus(); }
+  });
+})();
+</script>
+</body>
+</html>

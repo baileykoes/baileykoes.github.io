@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Review Explorer | Bailey Koestel</title>
+<meta name="description" content="A Python project that pulls movie review data from an API into a SQLite database, then analyzes it with Pandas, NumPy, Matplotlib, and regression models.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../project.css">
+</head>
+<body>
+
+<div class="topbar">
+  <span class="who">Bailey Koestel</span>
+  <a class="back" href="../../index.html#portfolio">Back to portfolio</a>
+</div>
+
+<main class="page">
+  <span class="tag python">Python</span>
+  <h1>Movie Review Explorer</h1>
+  <p class="lead">A Python project that pulls movie review data from an API, stores it in a SQLite database, and analyzes it to see what the ratings can tell us.</p>
+
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><strong>Collect.</strong> A Python script requests movie review data from an API.</li>
+    <li><strong>Store.</strong> The results are saved in a SQLite database so the data can be queried with SQL.</li>
+    <li><strong>Clean and analyze.</strong> Pandas and NumPy prepare the data, and regression models look at how the variables relate to each other.</li>
+    <li><strong>Visualize.</strong> Matplotlib charts make the patterns easy to see.</li>
+  </ol>
+
+  <h2>Tools</h2>
+  <ul class="chips" aria-label="Tools used">
+    <li>Python</li>
+    <li>SQLite</li>
+    <li>NumPy</li>
+    <li>Pandas</li>
+    <li>Matplotlib</li>
+    <li>Regression Models</li>
+  </ul>
+
+  <h2>Files</h2>
+  <div class="btn-row">
+    <a class="btn" href="movie_review_explorer.py" download>Download the Python script (.py)</a>
+    <a class="btn" href="movie_reviews.db" download>Download the database (.db)</a>
+  </div>
+</main>
+</body>
+</html>
