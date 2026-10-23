@@ -537,6 +537,12 @@
     padding-bottom:1px;
   }
   .project-link:hover{color:var(--rust); border-color:var(--rust);}
+  .project-note{
+    font-family:var(--mono);
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    width:fit-content;
+  }
 
   /* ---------- CARTHAGE ---------- */
   .catalog{
@@ -627,6 +633,40 @@
     display:block;
     margin-top:0.1rem;
   }
+  .resume-hook{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.35rem;
+    line-height:1.3;
+    color:var(--ink);
+    margin:0 0 1.2rem;
+  }
+  .work-with{
+    list-style:none;
+    margin:0 0 1.4rem;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:0.75rem;
+  }
+  .work-with li{
+    position:relative;
+    padding-left:1.3rem;
+    font-size:0.95rem;
+    color:var(--ink-soft);
+  }
+  .work-with li::before{
+    content:"";
+    position:absolute;
+    left:0; top:0.5em;
+    width:0.55rem; height:0.55rem;
+    border-radius:2px;
+    background:var(--teal);
+  }
+  .work-with li:nth-child(2)::before{background:var(--gold);}
+  .work-with li:nth-child(3)::before{background:var(--rust);}
+  .work-with strong{color:var(--ink); font-weight:600;}
+  .resume-covers{font-size:0.95rem; color:var(--ink-soft); margin:0 0 1rem;}
   .resume-card{
     border:1px solid var(--line);
     border-radius:8px;
@@ -834,7 +874,7 @@
         <!-- project cards injected by JS from PROJECTS array -->
       </div>
 
-      <p class="edit-note">Edit note: images above are temporary stock photos, and the "Open project" link on every card still points to "#". In the PROJECTS array (bottom of the file), swap each img for a real screenshot and each link for the real page: your manufacturing map's live URL, a PDF or screenshot for the Power BI dashboard, a link or embedded slideshow for the Tableau dashboard, a link to your code/repo for the Movie Review Explorer (or attach the .py and .db files), and pictures for the AI Automation Agent. The two Snap-on entries (reporting system and agent productivity) have no visuals yet — that's fine for now, or you can drop the Agent Productivity Analysis project entirely if you'd rather not show it without one.</p>
+      <p class="edit-note">Edit note: the Global Manufacturing Footprint Map card still has its link set to "#" until its HTML page is added, and the Manufacturing Map, Healthcare, and Movie Review cards still use temporary stock photos. Swap each img in the PROJECTS array (bottom of the file) for a real screenshot when you have one.</p>
     </section>
 
     <section id="carthage">
@@ -864,7 +904,7 @@
             <tr><td class="code">MKT 3130</td><td>Marketing Principles</td><td class="credits">4</td></tr>
             <tr><td class="code">ACC 2000</td><td>Accounting Fundamentals</td><td class="credits">4</td></tr>
           </table>
-          <p style="font-size:0.9rem; color:var(--ink-soft); margin-top:1.2rem;">I built this concentration to pair the technical side of the major with how businesses actually use data. <strong style="color:var(--ink);">MGT 3100</strong> is the foundation, a survey of the mathematical models used in management science and operations research — linear programming, queuing theory, decision analysis, and simulation — applied to real managerial decisions. <strong style="color:var(--ink);">MKT 3130</strong> connects that same data to customer behavior, covering the marketing mix, segmentation, and how a company positions a product based on what the data says about its audience. <strong style="color:var(--ink);">ACC 2000</strong> rounds it out by showing how that data ties back to the financial statements it's meant to inform, through financial ratio analysis, cost-volume-profit analysis, and evaluating capital investments. Together they let me analyze a dataset, understand what it means for customers, and translate that into a financial decision.</p>
+          <p style="font-size:0.9rem; color:var(--ink-soft); margin-top:1.2rem;">I built this concentration to pair the technical side of the major with how businesses actually use data. <strong style="color:var(--ink);">MGT 3100</strong> was the foundation, a survey of the mathematical models used in management science and operations research (linear programming, queuing theory, decision analysis, and simulation) applied to real managerial decisions. <strong style="color:var(--ink);">MKT 3130</strong> connected that same data to customer behavior, covering the marketing mix, segmentation, and how a company positions a product based on what the data says about its audience. <strong style="color:var(--ink);">ACC 2000</strong> rounded it out by showing how that data ties back to the financial statements it informs, through financial ratio analysis, cost-volume-profit analysis, and evaluating capital investments. Together they taught me to analyze a dataset, understand what it means for customers, and turn that into a financial decision.</p>
           <h3 style="margin-top:2rem;">Other relevant coursework</h3>
           <table class="course-table">
             <tr><td>Econometrics</td><td class="credits">4</td></tr>
@@ -874,7 +914,7 @@
         </div>
       </div>
       <div style="display:flex; gap:0.9rem; flex-wrap:wrap; margin-top:2rem;">
-        <a href="concentration-proposal.pdf" class="btn btn-outline" download>Read my concentration proposal (PDF)</a>
+        <a href="concentration-proposal.pdf" class="btn btn-outline" download>Read my concentration narrative (PDF)</a>
         <a href="capstone-reflection.pdf" class="btn btn-outline" download>Read my capstone reflection (PDF)</a>
       </div>
     </section>
@@ -907,11 +947,19 @@
               <span><span class="skill-name">Excel</span><span class="skill-context">Snap-on risk reporting, Month-end Balancing, agent productivity analysis</span></span>
             </li>
           </ul>
-          <p style="margin-top:1.6rem;">B.S. Data Science, Business Analytics Concentration<br>Minors: Mathematics, Business Administration<br>Carthage College — Class of 2027</p>
         </div>
         <div>
-          <p>My full resume covers education, coursework, skills, and internships.</p>
+          <p class="resume-hook">I build tools people use, working side by side with the teams who rely on them.</p>
+          <ul class="work-with">
+            <li><strong>I like working across teams.</strong> At Snap-on I partnered with actuaries, financial analysts, and coders.</li>
+            <li><strong>I learn new tools fast.</strong> Then I use them to automate the busywork.</li>
+            <li><strong>I explain things clearly.</strong> I've presented findings to leadership at both internships.</li>
+          </ul>
+          <p class="resume-covers">My full resume covers education, coursework, skills, and internships.</p>
           <a href="resume.pdf" class="btn btn-solid" download>Download resume (PDF)</a>
+          <div class="resume-card" style="margin-top:1.4rem;">
+            <p style="margin:0; color:var(--ink);">Bachelor's in Data Science, Business Analytics Concentration<br>Minors: Mathematics, Business Administration<br>Carthage College — Class of 2027</p>
+          </div>
         </div>
       </div>
     </section>
@@ -979,43 +1027,45 @@ const PROJECTS = [
     title: "Business Unit Performance Dashboard",
     skill: "Power BI",
     desc: "Built Power BI dashboards during my Vertiv internship covering demand, capacity, revenue, and operational insights across 4+ business units and 20+ product lines.",
-    img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
-    link: "#"
+    img: "projects/vertiv-powerbi/1.png",
+    link: "projects/vertiv-powerbi/"
   },
   {
     title: "Healthcare Expenditures Dashboard",
     skill: "Data Visualization",
     desc: "A Tableau dashboard exploring trends in healthcare expenditure data, presented as a slideshow walkthrough of the findings.",
     img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800&auto=format&fit=crop",
-    link: "#"
+    link: "https://docs.google.com/presentation/d/e/2PACX-1vTDVoLCt5UIBl6a4gAsbYmMPsLs-9i9fL7uQKJAGLOVfwNb-Pt54HsQxD4EB0_zv85otw5rbqh_4CL0/pub?start=false&loop=false&delayms=3000"
   },
   {
     title: "Movie Review Explorer",
     skill: "Python",
-    desc: "A Python project that pulls movie review data through an API into a SQLite database, then queries it to explore rating trends.",
+    desc: "A Python project that pulls movie review data from an API into a SQLite database, then analyzes it with Pandas, NumPy, Matplotlib, and regression models. The Python script and database are available to download.",
     img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
-    link: "#"
+    link: "projects/movie-review-explorer/"
   },
   {
     title: "AI Automation Agent",
     skill: "AI Automation",
-    desc: "An AI automation agent I built to take a repetitive workflow off someone's plate and run it automatically instead.",
-    img: "https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?q=80&w=800&auto=format&fit=crop",
-    link: "#"
+    desc: "An AI agent that classifies AME product families by learning patterns from the existing master hierarchy. It runs directly in Excel and returns confidence-scored recommendations with reasoning and green, yellow, or red stoplight flags.",
+    img: "projects/ai-agent/AI_Agent.png",
+    link: "projects/ai-agent/"
   },
   {
     title: "New Reporting System for Risk Mitigation",
     skill: "Excel",
     desc: "Spent 14+ months at Snap-on helping create and validate a new reporting system for risk mitigation and dealers' insurance departments, working cross-functionally with actuaries, financial analysts, and coders. Replaced and consolidated outdated Salesforce reports into 5-6 versatile reports used for all future balancing and financial reporting, and verified claims data going back to 2017.",
     img: "https://images.unsplash.com/photo-1460925897917-a2c11e0a1bd1?q=80&w=800&auto=format&fit=crop",
-    link: "#"
+    link: null,
+    note: "Internal Snap-on project — not shareable"
   },
   {
     title: "Agent Productivity Analysis",
     skill: "Excel",
     desc: "Analyzed agents' hours to see how productive each was and whether an additional agent was needed to cover all the tasks and hours.",
     img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=800&auto=format&fit=crop",
-    link: "#"
+    link: null,
+    note: "Internal Snap-on project — not shareable"
   }
 ];
 
@@ -1037,7 +1087,9 @@ function renderProjects(filter){
       <div class="project-body">
         <h3>${p.title}</h3>
         <p>${p.desc}</p>
-        <a class="project-link" href="${p.link}" target="_blank" rel="noopener">Open project</a>
+        ${p.link
+          ? `<a class="project-link" href="${p.link}" target="_blank" rel="noopener">Open project</a>`
+          : `<span class="project-note">${p.note || 'Not shareable'}</span>`}
       </div>`;
     grid.appendChild(card);
   });
