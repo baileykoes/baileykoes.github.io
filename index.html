@@ -508,6 +508,7 @@
   .project-tag.AI-Automation{background:var(--slate-bg);}
   .project-tag.Excel{background:var(--olive-bg);}
   .project-tag.Financial-Analysis{background:var(--gold-bg);}
+  .project-tag.HTML{background:var(--rust-bg);}
   .project-tags{position:absolute; top:0.7rem; left:0.7rem; right:0.7rem; display:flex; flex-wrap:wrap; gap:0.35rem;}
   .project-tags .project-tag{position:static;}
   .project-tags.inline{position:static; margin-bottom:0.2rem;}
@@ -873,6 +874,7 @@
         <button class="chip" data-skill="AI Automation">AI Automation</button>
         <button class="chip" data-skill="Excel">Excel</button>
         <button class="chip" data-skill="Financial Analysis">Financial Analysis</button>
+        <button class="chip" data-skill="HTML">HTML</button>
       </div>
 
       <div class="project-grid" id="projectGrid">
@@ -907,7 +909,7 @@
             <tr><td class="code">MKT 3130</td><td>Marketing Principles</td><td class="credits">4</td></tr>
             <tr><td class="code">ACC 2000</td><td>Accounting Fundamentals</td><td class="credits">4</td></tr>
           </table>
-          <p style="font-size:0.9rem; color:var(--ink-soft); margin-top:1.2rem;">I built this concentration to pair the technical side of the major with how businesses actually use data. <strong style="color:var(--ink);">MGT 3100</strong> was the foundation, a survey of the mathematical models used in management science and operations research (linear programming, queuing theory, decision analysis, and simulation) applied to real managerial decisions. <strong style="color:var(--ink);">MKT 3130</strong> connected that same data to customer behavior, covering the marketing mix, segmentation, and how a company positions a product based on what the data says about its audience. <strong style="color:var(--ink);">ACC 2000</strong> rounded it out by showing how that data ties back to the financial statements it informs, through financial ratio analysis, cost-volume-profit analysis, and evaluating capital investments. Together they taught me to analyze a dataset, understand what it means for customers, and turn that into a financial decision.</p>
+          <p style="font-size:0.9rem; color:var(--ink-soft); margin-top:1.2rem;">I built this concentration to pair the technical side of the major with how businesses actually use data. <strong style="color:var(--ink);">MGT 3100</strong> was the foundation, a survey of the mathematical models used in management science and operations research. We worked with statistics, optimization models, graphs, Excel, and profit and loss reports, all applied to real managerial decisions. <strong style="color:var(--ink);">MKT 3130</strong> connected that same data to customer behavior, covering the marketing mix, segmentation, and how a company positions a product based on what the data says about its audience. In groups, we pitched marketing campaigns and used what we learned in class to judge whether they would succeed. <strong style="color:var(--ink);">ACC 2000</strong> rounded it out by showing how that data ties back to the financial statements it informs. I learned how to read and build financial statements, adjust and record accounts with debits and credits, apply the time value of money, and use accounting math and models for decisions like make versus buy. Together they taught me to analyze a dataset, understand what it means for customers, and turn that into a financial decision.</p>
           <h3 style="margin-top:2rem;">Other relevant coursework</h3>
           <table class="course-table">
             <tr><td>Econometrics</td><td class="credits">4</td></tr>
@@ -1021,7 +1023,7 @@
 const PROJECTS = [
   {
     title: "Global Manufacturing Footprint Map",
-    skills: ["Data Visualization"],
+    skills: ["Data Visualization", "HTML"],
     desc: "An interactive HTML web app built during my Vertiv internship, giving 30,000+ employees and customers real-time visibility into manufacturing sites, business units, and expansion plans worldwide.",
     img: "footprint.png",
     link: "projects/manufacturing-map/index.html"
