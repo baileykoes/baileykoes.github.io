@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Movie Review Explorer | Bailey Koestel</title>
-<meta name="description" content="A Python project that pulls movie review data from an API into a SQLite database, then analyzes it with Pandas, NumPy, Matplotlib, and regression models.">
+<meta name="description" content="A Python and Flask web API backed by a SQLite database, where you can browse movies, search by title, actor, or rating, and add new movies, actors, and reviews.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../project.css">
@@ -19,24 +19,32 @@
 <main class="page">
   <span class="tag python">Python</span>
   <h1>Movie Review Explorer</h1>
-  <p class="lead">A Python project that pulls movie review data from an API, stores it in a SQLite database, and analyzes it to see what the ratings can tell us.</p>
+  <p class="lead">A Python and Flask web API backed by a SQLite database. It lets you browse movies, search them several ways, and add new movies, actors, and reviews.</p>
 
   <h2>How it works</h2>
   <ol class="steps">
-    <li><strong>Collect.</strong> A Python script requests movie review data from an API.</li>
-    <li><strong>Store.</strong> The results are saved in a SQLite database so the data can be queried with SQL.</li>
-    <li><strong>Clean and analyze.</strong> Pandas and NumPy prepare the data, and regression models look at how the variables relate to each other.</li>
-    <li><strong>Visualize.</strong> Matplotlib charts make the patterns easy to see.</li>
+    <li><strong>Store.</strong> A SQLite database holds four related tables: movies, actors, reviews, and a link table that connects actors to the movies they appear in.</li>
+    <li><strong>Serve.</strong> A Flask app turns SQL queries on that database into web endpoints that return JSON.</li>
+    <li><strong>Search.</strong> Look up movies by part of a title, by actor name, or by minimum average star rating.</li>
+    <li><strong>Add.</strong> Send a POST request to add a movie, an actor (linked to a movie), or a star rating and written review.</li>
   </ol>
+
+  <h2>Endpoints</h2>
+  <ul class="points">
+    <li><code>GET /movies</code> lists every movie with its actors</li>
+    <li><code>GET /movies/title/&lt;text&gt;</code> finds movies whose title contains the text</li>
+    <li><code>GET /movies/actors/&lt;name&gt;</code> finds the movies an actor appears in</li>
+    <li><code>GET /movies/ratings/&lt;min&gt;</code> returns movies with an average rating at or above the minimum</li>
+    <li><code>POST /movies/new</code>, <code>/actors/new</code>, and <code>/movies/&lt;id&gt;/review/new</code> add new records</li>
+  </ul>
 
   <h2>Tools</h2>
   <ul class="chips" aria-label="Tools used">
     <li>Python</li>
+    <li>Flask</li>
     <li>SQLite</li>
-    <li>NumPy</li>
-    <li>Pandas</li>
-    <li>Matplotlib</li>
-    <li>Regression Models</li>
+    <li>SQL</li>
+    <li>JSON</li>
   </ul>
 
   <h2>Files</h2>
